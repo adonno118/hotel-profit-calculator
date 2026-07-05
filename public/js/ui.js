@@ -23,8 +23,8 @@ const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, (char) => 
 const moneyOrDash = (value) => value === null || !Number.isFinite(value) ? '계산 불가' : won(value);
 export function getProfitMarginStatus(margin) {
   return Number.isFinite(margin) && margin >= 20
-    ? { key: 'good', text: '추천 매물!' }
-    : { key: 'warning', text: '주의 : 영업이익률이 너무 낮음!' };
+    ? { key: 'good', text: '수익성 지표 양호' }
+    : { key: 'warning', text: '주의: 영업이익률 20% 미만' };
 }
 
 function primaryCards(result, simple = false) {

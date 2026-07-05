@@ -21,7 +21,14 @@ node tests/storage.test.js
 
 배포 대상은 `public/` 디렉터리뿐입니다. `wrangler.jsonc`의 `assets.directory`가 `./public`을 가리키므로 `node_modules`, 테스트와 개발 설정 파일은 업로드되지 않습니다. Wrangler가 설치된 환경에서 `npm run deploy` 또는 `wrangler deploy`를 실행합니다. 별도의 빌드 명령, 환경 변수나 서버 함수는 필요하지 않습니다.
 
-배포 전 `public/js/config/site-config.js`의 `siteUrl`과 `public/robots.txt`, `public/sitemap.xml`의 `example.com`을 실제 도메인으로 바꿉니다.
+공개 URL은 `https://hotel-profit-calculator.cobus836.workers.dev`이며 `public/js/config/site-config.js`, `public/robots.txt`, `public/sitemap.xml`에서 동일하게 관리합니다.
+
+## 검색 등록 및 AdSense 준비
+
+- 실제 공개 도메인으로 canonical, Open Graph URL, 구조화 데이터, `robots.txt`, `sitemap.xml`을 통일합니다.
+- 배포 후 Google Search Console에 사이트 소유권을 확인하고 `/sitemap.xml`을 제출합니다.
+- AdSense 사이트 연결에는 계정에서 발급된 실제 게시자 ID로 코드 스니펫, 메타 태그 또는 `ads.txt` 중 안내된 확인 방법을 적용합니다. 예시 게시자 ID를 배포하지 않습니다.
+- 광고를 활성화하기 전에 개인정보처리방침의 실제 처리 내용과 AdSense 개인정보 보호 및 메시지/CMP 설정을 최종 확인합니다.
 
 ## 주요 구조
 
