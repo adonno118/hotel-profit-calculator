@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>모텔 수익률 계산기 | 숙박업 손익·투자 분석</title>
+  <meta name="description" content="객실당 매출, 월세, 인건비와 운영비를 입력해 모텔 매물의 월 영업이익과 투자 회수기간을 계산해 보세요.">
+  <meta name="theme-color" content="#173f5f">
+  <meta property="og:type" content="website"><meta property="og:locale" content="ko_KR">
+  <meta property="og:title" content="모텔 수익률 계산기"><meta property="og:description" content="숙박업 매물 손익과 투자 수익성을 빠르게 검토하세요."><meta property="og:url" content="https://example.com/">
+  <meta name="twitter:card" content="summary"><meta name="twitter:title" content="모텔 수익률 계산기"><meta name="twitter:description" content="숙박업 매물 손익과 투자 수익성을 빠르게 검토하세요.">
+  <link rel="canonical" href="https://example.com/">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/base.css"><link rel="stylesheet" href="css/layout.css"><link rel="stylesheet" href="css/components.css"><link rel="stylesheet" href="css/calculator.css"><link rel="stylesheet" href="css/a11y.css"><link rel="stylesheet" href="css/responsive.css">
+  <script id="site-schema" type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"모텔 수익률 계산기","applicationCategory":"FinanceApplication","operatingSystem":"Any","inLanguage":"ko-KR"}</script>
+</head>
+<body>
+  <a class="skip-link" href="#main">본문 바로가기</a>
+  <header class="site-header"><div class="container header-inner">
+    <a class="brand" href="index.html" data-site-name>모텔 수익률 계산기</a>
+    <nav aria-label="주요 메뉴"><a href="about.html">소개</a><a href="guide.html">이용 가이드</a><a href="disclaimer.html">면책 안내</a></nav>
+  </div></header>
+  <main id="main">
+    <section class="hero"><div class="container narrow">
+      <p class="eyebrow">숙박업 매물 손익 시뮬레이터</p><h1>이 매물, 한 달에 대략 얼마가 남을까요?</h1>
+      <p>핵심 숫자를 바꾸면 예상 매출·비용·영업이익이 즉시 계산됩니다. 입력값과 계산은 이 브라우저 안에서 처리됩니다.</p>
+    </div></section>
+
+    <div class="container calculator-shell">
+      <div class="mode-switch" role="group" aria-label="분석 모드">
+        <button type="button" class="mode-button" data-mode="simple" aria-pressed="true"><strong>간편 분석</strong><span>30초 매물 검토</span></button>
+        <button type="button" class="mode-button" data-mode="detailed" aria-pressed="false"><strong>상세 분석</strong><span>항목별 직접 조정</span></button>
+      </div>
+      <div class="toolbar"><span id="save-status" role="status">최근 입력값 자동 저장</span><div><button class="button secondary" id="load-demo" type="button">예시 데이터 불러오기</button><button class="button danger-ghost" id="reset-all" type="button">전체 초기화</button></div></div>
+
+      <section id="simple-mode" aria-labelledby="simple-title">
+        <div class="section-heading"><div><p class="step">간편 분석</p><h2 id="simple-title">핵심 정보로 30초 매물 분석</h2><p>자동 비용은 설정된 예시 추정 모델 기준이며 업계 평균을 뜻하지 않습니다.</p></div></div>
+        <div class="split-layout">
+          <section class="card input-card" aria-label="간편 분석 입력">
+            <div class="field-grid">
+              <label class="field"><span>운영 형태</span><select data-simple="operationType"><option value="lodging">숙박 중심</option><option value="monthly">달방 중심</option><option value="hybrid">숙박 + 달방</option></select><small>운영 형태에 따라 일부 회전 비용 추정 계수가 달라집니다.</small></label>
+              <label class="field"><span>객실 수</span><div class="unit-input"><input data-simple="rooms" inputmode="numeric" autocomplete="off"><b>실</b></div><small>영업에 사용할 전체 객실 수</small></label>
+              <label class="field"><span>연면적</span><div class="unit-input"><input data-simple="area" inputmode="decimal" autocomplete="off"><b>㎡</b></div><small id="simple-pyeong">0평 · 공과금 추정 기준</small></label>
+              <label class="field full"><span>객실당 예상 월매출</span><div class="unit-input"><input data-simple="revenuePerRoom" inputmode="numeric" autocomplete="off"><b>원</b></div><div id="simple-revenue-quick" class="quick-buttons"></div></label>
+              <label class="field"><span>보증금</span><div class="unit-input"><input data-simple="deposit" inputmode="numeric" autocomplete="off"><b>원</b></div><small>돌려받을 수 있는 금액도 투자금 기준에 포함</small></label>
+              <label class="field"><span>권리금</span><div class="unit-input"><input data-simple="premium" inputmode="numeric" autocomplete="off"><b>원</b></div><small>영업권·시설 인수 대가 등</small></label>
+              <label class="field full"><span>월 임대료</span><div class="unit-input"><input data-simple="rent" inputmode="numeric" autocomplete="off"><b>원</b></div></label>
+              <label class="field"><span>직원 수</span><div class="unit-input"><input data-simple="employees" inputmode="numeric" autocomplete="off"><b>명</b></div></label>
+              <label class="field"><span>1인당 평균 월급</span><div class="unit-input"><input data-simple="salaryPerEmployee" inputmode="numeric" autocomplete="off"><b>원</b></div><small>4대보험 등 부담 추정치는 별도 반영</small></label>
+            </div>
+          </section>
+          <aside class="results-panel" aria-live="polite"><h2>간편 분석 결과</h2><div id="simple-primary-results" class="primary-results"></div><div id="simple-secondary-results" class="secondary-results"></div><p class="result-note">모든 결과는 참고용 예상치이며 실제 매출과 비용을 보장하지 않습니다.</p><button id="to-detailed" class="button primary wide" type="button">이 값으로 상세 비용 조정하기</button></aside>
+        </div>
+        <details class="estimate-breakdown"><summary>자동 운영비 추정 내역 보기</summary><div id="simple-breakdown"></div><p>계수는 <code>js/config/estimation-config.js</code>에서 관리합니다. 상세 분석으로 전환하면 각 금액을 직접 수정할 수 있습니다.</p></details>
+      </section>
+
+      <section id="detailed-mode" hidden aria-labelledby="detailed-title">
+        <div class="section-heading"><div><p class="step">상세 분석</p><h2 id="detailed-title">항목별 손익 시뮬레이션</h2><p>매출·비용·투자비를 직접 추가하고 운영방식을 비교하세요.</p></div></div>
+        <div class="detail-grid">
+          <div class="detail-main">
+            <section class="card numbered"><h3><span>1</span> 매물 기본정보</h3><div class="field-grid compact"><label class="field"><span>객실 수</span><div class="unit-input"><input data-detail="rooms" inputmode="numeric"><b>실</b></div></label><label class="field"><span>연면적</span><div class="unit-input"><input data-detail="area" inputmode="numeric"><b>㎡</b></div><small id="detail-pyeong">0평</small></label></div></section>
+            <section class="card numbered"><div class="card-title"><h3><span>2</span> 투자비용</h3><button class="button small secondary" data-add="investment" type="button">+ 항목 추가</button></div><div id="investment-list" class="item-list"></div><div class="subtotal">총 투자비용 <strong id="investment-total">0원</strong></div></section>
+            <section class="card numbered"><div class="card-title"><h3><span>3</span> 예상 매출</h3><button class="button small secondary" data-add="revenue" type="button">+ 매출 추가</button></div><div class="quick-calc"><label class="field"><span>객실당 월 매출 빠른 계산</span><div class="unit-input"><input id="detail-per-room" inputmode="numeric"><b>원</b></div></label><button id="apply-room-revenue" class="button primary" type="button">객실 수와 곱해 매출에 반영</button></div><div id="detail-revenue-quick" class="quick-buttons"></div><p class="helper">매출 항목 빠른 추가</p><div id="revenue-template-quick" class="quick-buttons wrap"></div><div id="revenue-list" class="item-list"></div><div class="subtotal">월 총매출 <strong id="revenue-total">0원</strong></div></section>
+            <section class="card numbered"><div class="card-title"><h3><span>4</span> 예상 비용</h3><button class="button small secondary" data-add="expense" type="button">+ 비용 추가</button></div><p class="helper">플랫폼 수수료는 금액 또는 전체 매출 대비 비율로 입력할 수 있습니다.</p><div id="expense-quick" class="quick-buttons wrap"></div><div id="expense-list" class="item-list"></div><div class="subtotal two"><span>고정비 <strong id="fixed-total">0원</strong></span><span>변동비 <strong id="variable-total">0원</strong></span></div></section>
+            <section class="card numbered"><h3><span>5</span> 운영방식 선택 및 비교</h3><div class="field-grid compact"><label class="field"><span>현재 검토 방식</span><select data-detail="operationType"><option value="lodging">숙박 운영</option><option value="monthly">달방 운영</option><option value="hybrid">하이브리드</option></select></label><div id="hybrid-fields" class="hybrid-fields"><label class="field"><span>숙박 객실</span><div class="unit-input"><input data-hybrid="lodgingRooms" inputmode="numeric"><b>실</b></div></label><label class="field"><span>달방 객실</span><div class="unit-input"><input data-hybrid="monthlyRooms" inputmode="numeric"><b>실</b></div></label></div></div><p id="hybrid-warning" class="validation" role="alert"></p><p class="helper">비교값은 현재 입력값에 시나리오별 상대 계수를 적용한 참고값입니다. 특정 방식이 항상 유리하다는 의미가 아닙니다.</p><div id="scenario-results" class="scenario-grid"></div></section>
+          </div>
+          <aside class="results-panel sticky" aria-live="polite"><h2>상세 손익 결과</h2><div id="detail-primary-results" class="primary-results"></div><div id="detail-secondary-results" class="secondary-results"></div><p class="result-note">세금, 금융비용, 감가상각 등은 입력하지 않으면 포함되지 않습니다.</p></aside>
+        </div>
+      </section>
+    </div>
+
+    <section class="notice-section"><div class="container narrow"><h2>계산 결과를 해석할 때</h2><p>본 결과는 입력한 가정과 예시 추정 계수에 따른 참고값입니다. 지역과 상권, 시설 상태, 계절성, 객실 상태, 운영 능력, 플랫폼 정책, 인건비와 에너지 사용량에 따라 실제 결과는 달라질 수 있습니다.</p><p>투자 권유나 재무 자문이 아니며 계약·투자 전 현장 실사와 매출 자료 확인이 필요합니다. 세무·노무·법률 사항은 관련 전문가에게 확인하세요.</p><a href="guide.html">계산 결과 해석 가이드 보기 →</a></div></section>
+  </main>
+  <div id="mobile-summary" class="mobile-summary" aria-live="polite"></div>
+  <footer class="site-footer"><div class="container footer-grid"><div><strong data-site-name>모텔 수익률 계산기</strong><p>숙박업 매물의 손익을 빠르게 검토하는 참고용 도구</p></div><nav aria-label="하단 메뉴"><a href="about.html">사이트 소개</a><a href="guide.html">이용 가이드</a><a href="privacy.html">개인정보처리방침</a><a href="disclaimer.html">면책 안내</a><a href="contact.html">문의 안내</a></nav></div><p class="copyright">© 2026 <span data-site-name>모텔 수익률 계산기</span></p></footer>
+  <script type="module" src="js/app.js"></script>
+</body></html>

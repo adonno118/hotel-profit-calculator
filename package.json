@@ -1,0 +1,8 @@
+{
+  "name": "motel-profit-calculator",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node tests/calculator.test.js && node tests/storage.test.js"
+  }
+}
