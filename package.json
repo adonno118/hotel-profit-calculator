@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "deploy": "wrangler deploy",
     "test": "node tests/calculator.test.js && node tests/storage.test.js && node tests/ui.test.js"
   }
 }

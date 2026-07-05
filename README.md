@@ -1,6 +1,6 @@
 # 숙박업 수익률 계산기
 
-Cloudflare Pages에 그대로 배포할 수 있는 정적 숙박업 손익 시뮬레이터입니다. 서버나 데이터베이스 없이 HTML, CSS, Vanilla JavaScript만 사용합니다.
+Cloudflare Workers Static Assets로 배포할 수 있는 정적 숙박업 손익 시뮬레이터입니다. 서버나 데이터베이스 없이 HTML, CSS, Vanilla JavaScript만 사용합니다.
 
 ## 로컬 실행
 
@@ -17,28 +17,24 @@ node tests/calculator.test.js
 node tests/storage.test.js
 ```
 
-## Cloudflare Pages 배포
+## Cloudflare Workers 배포
 
-Git 저장소를 Cloudflare Pages에 연결한 뒤 Framework preset은 `None`, Build command는 비워 두고, Build output directory는 `/`로 지정합니다. 또는 이 디렉터리의 정적 파일을 Direct Upload로 업로드합니다. 별도의 환경 변수나 서버 함수는 필요하지 않습니다.
+배포 대상은 `public/` 디렉터리뿐입니다. `wrangler.jsonc`의 `assets.directory`가 `./public`을 가리키므로 `node_modules`, 테스트와 개발 설정 파일은 업로드되지 않습니다. Wrangler가 설치된 환경에서 `npm run deploy` 또는 `wrangler deploy`를 실행합니다. 별도의 빌드 명령, 환경 변수나 서버 함수는 필요하지 않습니다.
 
-배포 전 `js/config/site-config.js`의 `siteUrl`과 `robots.txt`, `sitemap.xml`의 `example.com`을 실제 도메인으로 바꿉니다.
+배포 전 `public/js/config/site-config.js`의 `siteUrl`과 `public/robots.txt`, `public/sitemap.xml`의 `example.com`을 실제 도메인으로 바꿉니다.
 
 ## 주요 구조
 
-- `index.html`: 간편·상세 분석 화면과 결과 영역
-- `about.html`, `guide.html`, `privacy.html`, `disclaimer.html`, `contact.html`: 신뢰·정책 콘텐츠
-- `css/base.css`, `layout.css`, `components.css`, `calculator.css`, `responsive.css`: 토큰, 배치, 공통 요소, 계산기, 반응형 스타일
-- `js/app.js`: 상태 변경과 각 모듈 연결
-- `js/state.js`: 초기 상태와 예시 데이터
-- `js/calculator.js`: 간편·상세·시나리오 계산 공식
-- `js/ui.js`: 화면 렌더링과 사용자 이벤트
-- `js/storage.js`: localStorage 자동 저장·복원·초기화
-- `js/utils.js`: 숫자 검증과 원화·비율 포맷
-- `js/config/site-config.js`: 사이트명, 연락처, 페이지별 SEO 메타데이터
-- `js/config/estimation-config.js`: 공과금, 청소 인력, PMS/CMS, 객실당 비용과 빠른 매출 설정값
-- `js/config/expense-templates.js`: 빠른 비용 항목
-- `js/config/revenue-templates.js`: 빠른 매출 항목
-- `js/config/scenarios.js`: 운영방식 비교용 상대 계수
+- `public/index.html`: 간편·상세 분석 화면과 결과 영역
+- `public/about.html`, `guide.html`, `privacy.html`, `disclaimer.html`, `contact.html`: 신뢰·정책 콘텐츠
+- `public/css/`: 토큰, 배치, 공통 요소, 계산기, 반응형 스타일
+- `public/js/app.js`: 상태 변경과 각 모듈 연결
+- `public/js/state.js`: 초기 상태와 예시 데이터
+- `public/js/calculator.js`: 간편·상세·시나리오 계산 공식
+- `public/js/ui.js`: 화면 렌더링과 사용자 이벤트
+- `public/js/storage.js`: localStorage 자동 저장·복원·초기화
+- `public/js/utils.js`: 숫자 검증과 원화·비율 포맷
+- `public/js/config/`: 사이트, 추정 계수, 템플릿과 시나리오 설정
 - `tests/`: 계산·저장 테스트와 개발용 정적 서버
 
 ## 계산 공식

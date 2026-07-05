@@ -13,9 +13,9 @@ import {
   estimateSimple,
   metrics,
   validateHybridRoomAllocation
-} from '../js/calculator.js';
-import { fromWon, number, toWon } from '../js/utils.js';
-import { LODGING_REVENUE_PRESETS, MONTHLY_STAY_REVENUE_PRESETS } from '../js/config/estimation-config.js';
+} from '../public/js/calculator.js';
+import { fromWon, number, toWon } from '../public/js/utils.js';
+import { LODGING_REVENUE_PRESETS, MONTHLY_STAY_REVENUE_PRESETS } from '../public/js/config/estimation-config.js';
 
 assert.deepEqual(LODGING_REVENUE_PRESETS, [800000, 1000000, 1200000, 1500000, 1800000, 2000000, 2500000]);
 assert.deepEqual(MONTHLY_STAY_REVENUE_PRESETS, [500000, 600000, 700000, 800000, 1000000, 1200000]);

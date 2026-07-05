@@ -7,8 +7,8 @@ globalThis.localStorage = {
   removeItem(key) { values.delete(key); }
 };
 
-const { saveState, loadState, clearState } = await import('../js/storage.js');
-const { mergeStoredState } = await import('../js/state.js');
+const { saveState, loadState, clearState } = await import('../public/js/storage.js');
+const { mergeStoredState } = await import('../public/js/state.js');
 const state = { version: 1, simple: { rooms: 30 } };
 assert.equal(saveState(state), true);
 assert.deepEqual(loadState(), state);

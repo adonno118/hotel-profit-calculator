@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import { getProfitMarginStatus } from '../js/ui.js';
-import { compactWon, formatWonToBaekmanwon, formatWonToEokwon, formatWonToManwon, percent, years } from '../js/utils.js';
+import { getProfitMarginStatus } from '../public/js/ui.js';
+import { compactWon, formatWonToBaekmanwon, formatWonToEokwon, formatWonToManwon, percent, years } from '../public/js/utils.js';
 
 assert.equal(formatWonToBaekmanwon(54400000), '54.4백만원');
 assert.equal(formatWonToBaekmanwon(48088143), '48.1백만원');
