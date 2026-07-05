@@ -30,7 +30,8 @@ function estimateForKey(key) {
   const area = number(state.detailed.area);
   const payroll = state.detailed.expenses.filter((item) => item.name.includes('급여')).reduce((total, item) => total + number(item.amount), 0);
   const rooms = number(state.detailed.rooms);
-  return { electricity: area * C.utilities.electricityPerSqm, water: area * C.utilities.waterPerSqm, gas: area * C.utilities.gasPerSqm, payrollBurden: payroll * C.payroll.employerBurdenRate, pmsCms: estimatePmsCmsCost(rooms), communications: estimateCommunicationCost(rooms) }[key] || 0;
+  const burdenRate = C.payroll.employerBurdenRates[state.detailed.operationType] ?? C.payroll.employerBurdenRates.lodging;
+  return { electricity: area * C.utilities.electricityPerSqm, water: area * C.utilities.waterPerSqm, gas: area * C.utilities.gasPerSqm, payrollBurden: payroll * burdenRate, pmsCms: estimatePmsCmsCost(rooms), communications: estimateCommunicationCost(rooms) }[key] || 0;
 }
 
 function transferSimpleToDetailed() {

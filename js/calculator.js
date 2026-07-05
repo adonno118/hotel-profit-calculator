@@ -32,15 +32,17 @@ export function estimateHybridCleaningCost(lodgingRoomCount) {
 }
 
 export function estimateCleaningCost({ mode, totalRooms, lodgingRooms = 0 }) {
-  if (mode === 'monthly') return { cost: estimateMonthlyStayCleaningCost(totalRooms), insuredPayroll: 0 };
+  if (mode === 'monthly') {
+    const cost = estimateMonthlyStayCleaningCost(totalRooms);
+    return { cost };
+  }
   if (mode === 'hybrid') {
     const cost = estimateHybridCleaningCost(Math.min(number(totalRooms), number(lodgingRooms)));
-    return { cost, insuredPayroll: cost };
+    return { cost };
   }
   const rooms = number(totalRooms);
-  const config = CLEANING_CONFIG.lodging;
-  const insuredPayroll = Math.floor(rooms / config.roomsPerFullTime) * config.fullTimeMonthlyCost;
-  return { cost: estimateLodgingCleaningCost(rooms), insuredPayroll };
+  const cost = estimateLodgingCleaningCost(rooms);
+  return { cost };
 }
 
 export const estimateCommunicationCost = (roomCount) => number(roomCount) * C.communicationPerRoom;
@@ -75,20 +77,21 @@ export function estimateSimple(input) {
   const monthlyStayRevenue = monthlyRooms * number(input.monthlyStayRevenuePerRoom);
   const revenue = lodgingRevenue + monthlyStayRevenue;
   const cleaning = estimateCleaningCost({ mode, totalRooms: rooms, lodgingRooms });
+  const employerBurdenRate = C.payroll.employerBurdenRates[mode];
   const details = {
     rent: number(input.rent),
     cleaningLabor: cleaning.cost,
-    payrollBurden: cleaning.insuredPayroll * C.payroll.employerBurdenRate,
+    payrollBurden: cleaning.cost * employerBurdenRate,
     electricity: area * C.utilities.electricityPerSqm,
     water: area * C.utilities.waterPerSqm,
     gas: area * C.utilities.gasPerSqm,
     platform: estimatePlatformCost(lodgingRevenue),
-    pmsCms: estimatePmsCmsCost(rooms),
+    pmsCms: mode === 'monthly' ? 0 : estimatePmsCmsCost(rooms),
     communications: estimateCommunicationCost(rooms),
     insurance: C.fixed.insurance,
     accounting: C.fixed.accounting,
     amenities: estimateAmenityCost(rooms),
-    laundry: estimateLaundryCost(rooms)
+    laundry: mode === 'monthly' ? 0 : estimateLaundryCost(rooms)
   };
   const expense = sum(Object.values(details));
   const fixed = details.rent + details.cleaningLabor + details.payrollBurden + details.pmsCms + details.communications + details.insurance + details.accounting;

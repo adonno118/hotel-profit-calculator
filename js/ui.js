@@ -2,7 +2,7 @@ import { LODGING_REVENUE_PRESETS, MONTHLY_STAY_REVENUE_PRESETS } from './config/
 import { EXPENSE_TEMPLATES } from './config/expense-templates.js';
 import { REVENUE_TEMPLATES } from './config/revenue-templates.js';
 import { estimateSimple, calculateDetailed, compareScenarios, expenseAmount } from './calculator.js';
-import { compactWon, formatDecimalInput, formatInput, fromWon, number, percent, toWon, won, years } from './utils.js';
+import { compactWon, formatDecimalInput, formatInput, formatWonToBaekmanwon, formatWonToEokwon, formatWonToManwon, fromWon, number, percent, toWon, won, years } from './utils.js';
 
 const $ = (selector) => document.querySelector(selector);
 const SIMPLE_MONEY_UNITS = { deposit: 100000000, premium: 100000000, rent: 1000000, lodgingRevenuePerRoom: 10000, monthlyStayRevenuePerRoom: 10000 };
@@ -21,6 +21,11 @@ function formatNumericInput(input, value) {
 }
 const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
 const moneyOrDash = (value) => value === null || !Number.isFinite(value) ? '계산 불가' : won(value);
+export function getProfitMarginStatus(margin) {
+  return Number.isFinite(margin) && margin >= 20
+    ? { key: 'good', text: '추천 매물!' }
+    : { key: 'warning', text: '주의 : 영업이익률이 너무 낮음!' };
+}
 
 function primaryCards(result, simple = false) {
   const loss = result.monthlyProfit < 0;
@@ -31,15 +36,14 @@ function primaryCards(result, simple = false) {
     ['영업이익률', result.margin, 'percent']
   ].map(([label, value, type]) => {
     if (type === 'percent') return `<div class="result-box ${type}"><span class="label">${label}</span><strong class="result-value">${value === null ? '계산 불가' : percent(value)}</strong></div>`;
-    const compact = compactWon(value); const exact = won(value);
-    return `<div class="result-box ${type}"><span class="label">${label}</span><strong class="result-value"><span>${compact}</span>${compact === exact ? '' : `<small>${exact}</small>`}</strong></div>`;
+    return `<div class="result-box ${type}"><span class="label">${label}</span><strong class="result-value"><span class="result-value-main">${compactWon(value)}</span><small class="result-value-sub">(${formatWonToBaekmanwon(value)})</small></strong></div>`;
   }).join('');
 }
 
 function secondaryMetrics(result, simple = false) {
   const rows = simple ? [
-    ['예상 연 영업이익', won(result.annualProfit)], ['총 초기 투자금', won(result.investment)],
-    ['1억당 월 예상이익', moneyOrDash(result.monthlyPerHundredM)], ['1억당 연 예상이익', moneyOrDash(result.annualPerHundredM)],
+    ['예상 연 영업이익', formatWonToManwon(result.annualProfit)], ['총 초기 투자금', formatWonToEokwon(result.investment)],
+    ['1억당 월 예상이익', result.monthlyPerHundredM === null ? '계산 불가' : formatWonToManwon(result.monthlyPerHundredM)], ['1억당 연 예상이익', result.annualPerHundredM === null ? '계산 불가' : formatWonToManwon(result.annualPerHundredM)],
     ['투자수익률 참고값', result.roi === null ? '계산 불가' : percent(result.roi)], ['예상 투자 회수기간', years(result.paybackYears)]
   ] : [
     ['연 예상 영업이익', won(result.annualProfit)], ['총 고정비', won(result.fixed)], ['총 변동비', won(result.variable)],
@@ -116,9 +120,15 @@ export function createUI({ getState, onMutate, onStructuralChange, onModeChange,
     $('#simple-pyeong').textContent = `${(number(state().simple.area) / 3.3058).toFixed(1)}평 · 공과금 추정 기준`;
     $('#simple-primary-results').innerHTML = primaryCards(result, true);
     $('#simple-secondary-results').innerHTML = secondaryMetrics(result, true);
+    const status = getProfitMarginStatus(result.margin);
+    const resultsPanel = $('#simple-results-panel');
+    resultsPanel.dataset.status = status.key;
+    const statusNode = $('#simple-result-status');
+    statusNode.dataset.status = status.key;
+    statusNode.textContent = status.text;
     const composition = $('#simple-revenue-composition');
     composition.hidden = state().simple.operationType !== 'hybrid';
-    composition.innerHTML = `<h3>예상 매출 구성</h3><div><span>숙박 예상 매출</span><strong>${compactWon(result.lodgingRevenue)} <small>(${won(result.lodgingRevenue)})</small></strong></div><div><span>달방 예상 매출</span><strong>${compactWon(result.monthlyStayRevenue)} <small>(${won(result.monthlyStayRevenue)})</small></strong></div><div class="total"><span>총 예상 매출</span><strong>${compactWon(result.revenue)} <small>(${won(result.revenue)})</small></strong></div>`;
+    composition.innerHTML = `<h3>예상 매출 구성</h3><div><span>숙박 예상 매출</span><strong>${compactWon(result.lodgingRevenue)} <small>(${formatWonToBaekmanwon(result.lodgingRevenue)})</small></strong></div><div><span>달방 예상 매출</span><strong>${compactWon(result.monthlyStayRevenue)} <small>(${formatWonToBaekmanwon(result.monthlyStayRevenue)})</small></strong></div><div class="total"><span>총 예상 매출</span><strong>${compactWon(result.revenue)} <small>(${formatWonToBaekmanwon(result.revenue)})</small></strong></div>`;
     const names = { rent: '월 임대료', cleaningLabor: '청소 인건비 추정치', payrollBurden: '4대보험 등 사업주 부담 추정치', electricity: '전기요금 추정치', water: '수도요금 추정치', gas: '가스요금 추정치', platform: '플랫폼 및 결제 비용 예상치', pmsCms: 'PMS/CMS 추정치', communications: '통신비 추정치', insurance: '보험료 월 환산 추정치', accounting: '세무 기장료 추정치', amenities: '어매니티·기본 소모품 추정치', laundry: '외부 세탁비 추정치' };
     $('#simple-breakdown').innerHTML = Object.entries(result.details).map(([key, value]) => `<div class="breakdown-row"><span>${names[key]}</span><strong>${won(value)}</strong></div>`).join('');
   }

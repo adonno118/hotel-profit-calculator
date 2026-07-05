@@ -25,7 +25,7 @@ export const MONTHLY_STAY_REVENUE_PRESETS = [500000, 600000, 700000, 800000, 100
 export const ESTIMATION_CONFIG = {
   version: 2,
   utilities: { electricityPerSqm: 1750, waterPerSqm: 520, gasPerSqm: 380 },
-  payroll: { employerBurdenRate: 0.105 },
+  payroll: { employerBurdenRates: { lodging: 0.10, monthly: 0.009, hybrid: 0.10 } },
   platform: { revenueRate: 0.09 },
   communicationPerRoom: 15000,
   amenityPerRoom: 50000,
