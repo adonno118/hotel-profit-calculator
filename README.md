@@ -1,4 +1,4 @@
-# 모텔 수익률 계산기
+# 숙박업 수익률 계산기
 
 Cloudflare Pages에 그대로 배포할 수 있는 정적 숙박업 손익 시뮬레이터입니다. 서버나 데이터베이스 없이 HTML, CSS, Vanilla JavaScript만 사용합니다.
 
@@ -21,7 +21,7 @@ node tests/storage.test.js
 
 Git 저장소를 Cloudflare Pages에 연결한 뒤 Framework preset은 `None`, Build command는 비워 두고, Build output directory는 `/`로 지정합니다. 또는 이 디렉터리의 정적 파일을 Direct Upload로 업로드합니다. 별도의 환경 변수나 서버 함수는 필요하지 않습니다.
 
-배포 전 `js/config/site-config.js`의 `siteUrl`과 `contactEmail`을 실제 값으로 변경하고, `robots.txt`와 `sitemap.xml`의 `example.com`도 실제 도메인으로 바꿉니다.
+배포 전 `js/config/site-config.js`의 `siteUrl`과 `robots.txt`, `sitemap.xml`의 `example.com`을 실제 도메인으로 바꿉니다.
 
 ## 주요 구조
 
@@ -35,7 +35,7 @@ Git 저장소를 Cloudflare Pages에 연결한 뒤 Framework preset은 `None`, B
 - `js/storage.js`: localStorage 자동 저장·복원·초기화
 - `js/utils.js`: 숫자 검증과 원화·비율 포맷
 - `js/config/site-config.js`: 사이트명, 연락처, 페이지별 SEO 메타데이터
-- `js/config/estimation-config.js`: 공과금, 급여 부담, 매출 연동비와 빠른 객실당 매출 값
+- `js/config/estimation-config.js`: 공과금, 청소 인력, PMS/CMS, 객실당 비용과 빠른 매출 설정값
 - `js/config/expense-templates.js`: 빠른 비용 항목
 - `js/config/revenue-templates.js`: 빠른 매출 항목
 - `js/config/scenarios.js`: 운영방식 비교용 상대 계수

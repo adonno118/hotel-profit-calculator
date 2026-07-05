@@ -2,7 +2,7 @@ import { SITE_CONFIG, applySiteMetadata } from './config/site-config.js';
 import { ESTIMATION_CONFIG as C } from './config/estimation-config.js';
 import { createInitialState, mergeStoredState, DEMO_STATE } from './state.js';
 import { loadState, saveState, clearState } from './storage.js';
-import { estimateSimple } from './calculator.js';
+import { estimateCommunicationCost, estimatePmsCmsCost, estimateSimple } from './calculator.js';
 import { createUI } from './ui.js';
 import { number, uid } from './utils.js';
 
@@ -29,16 +29,25 @@ function findAndSet(path, value) {
 function estimateForKey(key) {
   const area = number(state.detailed.area);
   const payroll = state.detailed.expenses.filter((item) => item.name.includes('급여')).reduce((total, item) => total + number(item.amount), 0);
-  return { electricity: area * C.utilities.electricityPerSqm, water: area * C.utilities.waterPerSqm, gas: area * C.utilities.gasPerSqm, payrollBurden: payroll * C.payroll.employerBurdenRate }[key] || 0;
+  const rooms = number(state.detailed.rooms);
+  return { electricity: area * C.utilities.electricityPerSqm, water: area * C.utilities.waterPerSqm, gas: area * C.utilities.gasPerSqm, payrollBurden: payroll * C.payroll.employerBurdenRate, pmsCms: estimatePmsCmsCost(rooms), communications: estimateCommunicationCost(rooms) }[key] || 0;
 }
 
 function transferSimpleToDetailed() {
   const s = state.simple; const result = estimateSimple(s); const d = state.detailed;
   d.rooms = number(s.rooms); d.area = number(s.area); d.operationType = s.operationType;
-  d.investments = [{ id: uid('inv'), name: '보증금', amount: number(s.deposit) }, { id: uid('inv'), name: '권리금', amount: number(s.premium) }];
-  d.revenues = [{ id: uid('rev'), name: '객실 예상 매출', amount: result.revenue, type: s.operationType }];
-  const labels = { rent: ['월세', 'fixed'], payroll: ['직원 급여', 'fixed'], payrollBurden: ['4대보험 등 사업주 부담 추정치', 'fixed'], electricity: ['전기요금 추정치', 'variable'], water: ['수도요금 추정치', 'variable'], gas: ['가스요금 추정치', 'variable'], platform: ['플랫폼 및 결제 비용 예상치', 'variable'], pmsCms: ['PMS & CMS 추정치', 'fixed'], communications: ['통신비 추정치', 'fixed'], insurance: ['보험료 추정치', 'fixed'], accounting: ['세무사 기장료 추정치', 'fixed'], maintenance: ['시설보수비 추정치', 'variable'], amenities: ['어매니티 추정치', 'variable'], laundry: ['세탁비 추정치', 'variable'], supplies: ['소모품비 추정치', 'variable'], other: ['기타 운영비 추정치', 'variable'] };
-  d.expenses = Object.entries(result.details).map(([key, amount]) => ({ id: uid('exp'), name: labels[key][0], amount: Math.round(amount), category: labels[key][1], method: 'amount', estimateKey: ['electricity', 'water', 'gas', 'payrollBurden'].includes(key) ? key : null }));
+  d.hybrid = { lodgingRooms: number(s.lodgingRooms), monthlyRooms: number(s.monthlyRooms) };
+  d.investments = [{ id: uid('inv'), name: '보증금', amount: number(s.deposit) }, { id: uid('inv'), name: '권리금', amount: number(s.premium) }, { id: uid('inv'), name: '리모델링 비용', amount: 0 }];
+  if (s.operationType === 'hybrid') {
+    d.revenues = [
+      { id: uid('rev'), name: '숙박 예상 매출', amount: result.lodgingRevenue, type: 'lodging' },
+      { id: uid('rev'), name: '달방 예상 매출', amount: result.monthlyStayRevenue, type: 'monthly' }
+    ];
+  } else {
+    d.revenues = [{ id: uid('rev'), name: '객실 예상 매출', amount: result.revenue, type: s.operationType }];
+  }
+  const labels = { rent: ['월세', 'fixed'], cleaningLabor: ['청소 인건비 추정치', 'fixed'], payrollBurden: ['4대보험 등 사업주 부담 추정치', 'fixed'], electricity: ['전기요금 추정치', 'variable'], water: ['수도요금 추정치', 'variable'], gas: ['가스요금 추정치', 'variable'], platform: ['플랫폼 및 결제 비용 예상치', 'variable'], pmsCms: ['PMS & CMS 추정치', 'fixed'], communications: ['통신비 추정치', 'fixed'], insurance: ['보험료 추정치', 'fixed'], accounting: ['세무사 기장료 추정치', 'fixed'], amenities: ['어매니티 추정치', 'variable'], laundry: ['세탁비 추정치', 'variable'] };
+  d.expenses = Object.entries(result.details).map(([key, amount]) => ({ id: uid('exp'), name: labels[key][0], amount: Math.round(amount), category: labels[key][1], method: 'amount', basis: key === 'platform' ? 'lodgingRevenue' : null, estimateKey: ['electricity', 'water', 'gas', 'payrollBurden', 'pmsCms', 'communications'].includes(key) ? key : null }));
   state.mode = 'detailed'; persist(); ui.renderAll(); document.querySelector('#detailed-title').scrollIntoView({ behavior: 'smooth' });
 }
 
@@ -50,7 +59,7 @@ function add(kind) {
 }
 
 function structural(action, payload) {
-  if (action === 'addExpenseTemplate') state.detailed.expenses.push({ id: uid('exp'), name: payload.name, amount: payload.estimateKey ? estimateForKey(payload.estimateKey) : 0, category: payload.category, method: payload.method || 'amount', rate: payload.rate || 0, estimateKey: payload.estimateKey || null });
+  if (action === 'addExpenseTemplate') state.detailed.expenses.push({ id: uid('exp'), name: payload.name, amount: payload.estimateKey ? estimateForKey(payload.estimateKey) : 0, category: payload.category, method: payload.method || 'amount', rate: payload.rate || 0, basis: payload.basis || null, estimateKey: payload.estimateKey || null });
   if (action === 'addRevenueTemplate') state.detailed.revenues.push({ id: uid('rev'), name: payload.name, amount: 0, type: payload.type });
   if (action === 'applyRoomRevenue') {
     const amount = number(state.detailed.rooms) * payload;
@@ -67,7 +76,7 @@ const ui = createUI({
   onStructuralChange: structural,
   onModeChange(mode) { state.mode = mode; persist(); ui.renderMode(); ui.renderResults(); },
   onTransfer: transferSimpleToDetailed,
-  onDemo() { state = mergeStoredState({ ...createInitialState(), ...DEMO_STATE, version: 1 }); persist(); ui.renderAll(); },
+  onDemo() { state = mergeStoredState({ ...createInitialState(), ...DEMO_STATE, version: 3 }); persist(); ui.renderAll(); },
   onReset() { if (window.confirm('모든 입력값을 지우고 처음 상태로 돌아갈까요?')) { clearTimeout(saveTimer); clearState(); state = createInitialState(); ui.renderAll(); document.querySelector('#save-status').textContent = '입력값이 초기화됨'; } },
   onAdd: add,
   onRemove(kind, id) { state.detailed[`${kind}s`] = state.detailed[`${kind}s`].filter((item) => item.id !== id); persist(); ui.renderLists(); ui.renderResults(); },

@@ -1,10 +1,11 @@
-import { ESTIMATION_CONFIG as C } from './config/estimation-config.js';
+import { LODGING_REVENUE_PRESETS, MONTHLY_STAY_REVENUE_PRESETS } from './config/estimation-config.js';
 import { EXPENSE_TEMPLATES } from './config/expense-templates.js';
 import { REVENUE_TEMPLATES } from './config/revenue-templates.js';
-import { estimateSimple, calculateDetailed, compareScenarios } from './calculator.js';
-import { formatInput, number, percent, won, years } from './utils.js';
+import { estimateSimple, calculateDetailed, compareScenarios, expenseAmount } from './calculator.js';
+import { compactWon, formatDecimalInput, formatInput, fromWon, number, percent, toWon, won, years } from './utils.js';
 
 const $ = (selector) => document.querySelector(selector);
+const SIMPLE_MONEY_UNITS = { deposit: 100000000, premium: 100000000, rent: 1000000, lodgingRevenuePerRoom: 10000, monthlyStayRevenuePerRoom: 10000 };
 function formatNumericInput(input, value) {
   const caret = input.selectionStart ?? input.value.length;
   const digitsBefore = (input.value.slice(0, caret).match(/\d/g) || []).length;
@@ -28,7 +29,11 @@ function primaryCards(result, simple = false) {
     [simple ? '예상 월 운영비' : '월 총비용', result.expense, ''],
     [loss ? '예상 영업손실' : '예상 월 영업이익', result.monthlyProfit, loss ? 'loss' : 'profit'],
     ['영업이익률', result.margin, 'percent']
-  ].map(([label, value, type]) => `<div class="result-box ${type}"><span class="label">${label}</span><strong>${type === 'percent' ? (value === null ? '계산 불가' : percent(value)) : won(value)}</strong></div>`).join('');
+  ].map(([label, value, type]) => {
+    if (type === 'percent') return `<div class="result-box ${type}"><span class="label">${label}</span><strong class="result-value">${value === null ? '계산 불가' : percent(value)}</strong></div>`;
+    const compact = compactWon(value); const exact = won(value);
+    return `<div class="result-box ${type}"><span class="label">${label}</span><strong class="result-value"><span>${compact}</span>${compact === exact ? '' : `<small>${exact}</small>`}</strong></div>`;
+  }).join('');
 }
 
 function secondaryMetrics(result, simple = false) {
@@ -58,7 +63,8 @@ export function createUI({ getState, onMutate, onStructuralChange, onModeChange,
   function renderInputs() {
     document.querySelectorAll('[data-simple]').forEach((input) => {
       const value = state().simple[input.dataset.simple];
-      input.value = input.tagName === 'SELECT' ? value : formatInput(value);
+      const unit = SIMPLE_MONEY_UNITS[input.dataset.simple];
+      input.value = input.tagName === 'SELECT' ? value : unit ? formatDecimalInput(fromWon(value, unit)) : formatInput(value);
     });
     document.querySelectorAll('[data-detail]').forEach((input) => {
       const value = state().detailed[input.dataset.detail];
@@ -68,12 +74,23 @@ export function createUI({ getState, onMutate, onStructuralChange, onModeChange,
     $('#simple-pyeong').textContent = `${(number(state().simple.area) / 3.3058).toFixed(1)}평 · 공과금 추정 기준`;
     $('#detail-pyeong').textContent = `${(number(state().detailed.area) / 3.3058).toFixed(1)}평`;
     $('#hybrid-fields').hidden = state().detailed.operationType !== 'hybrid';
+    const simpleOperationType = state().simple.operationType;
+    $('#simple-hybrid-fields').hidden = simpleOperationType !== 'hybrid';
+    $('#simple-lodging-revenue-field').hidden = simpleOperationType === 'monthly';
+    $('#simple-monthly-revenue-field').hidden = simpleOperationType === 'lodging';
+    const simpleRooms = number(state().simple.rooms);
+    const simpleUsed = number(state().simple.lodgingRooms) + number(state().simple.monthlyRooms);
+    $('#simple-hybrid-warning').textContent = simpleOperationType === 'hybrid' && simpleUsed > simpleRooms
+      ? `객실 배분 합계 ${simpleUsed}실이 전체 ${simpleRooms}실을 초과합니다. 계산에서는 초과 객실을 제외합니다.`
+      : '';
   }
 
   function renderQuickButtons() {
-    const revenueButtons = C.quickRevenuePerRoom.map((amount) => `<button type="button" data-quick-revenue="${amount}">${Math.round(amount / 10000)}만원</button>`).join('');
-    $('#simple-revenue-quick').innerHTML = revenueButtons;
-    $('#detail-revenue-quick').innerHTML = revenueButtons.replaceAll('data-quick-revenue', 'data-detail-quick-revenue');
+    const lodgingButtons = LODGING_REVENUE_PRESETS.map((amount) => `<button type="button" data-quick-lodging-revenue="${amount}">${Math.round(amount / 10000)}만원</button>`).join('');
+    const monthlyButtons = MONTHLY_STAY_REVENUE_PRESETS.map((amount) => `<button type="button" data-quick-monthly-revenue="${amount}">${Math.round(amount / 10000)}만원</button>`).join('');
+    $('#simple-lodging-revenue-quick').innerHTML = lodgingButtons;
+    $('#simple-monthly-revenue-quick').innerHTML = monthlyButtons;
+    $('#detail-revenue-quick').innerHTML = lodgingButtons.replaceAll('data-quick-lodging-revenue', 'data-detail-quick-revenue');
     $('#revenue-template-quick').innerHTML = REVENUE_TEMPLATES.map((item, index) => `<button type="button" data-revenue-template="${index}">${escapeHtml(item.name)}</button>`).join('');
     $('#expense-quick').innerHTML = EXPENSE_TEMPLATES.map((item, index) => `<button type="button" data-expense-template="${index}">${escapeHtml(item.name)}</button>`).join('');
   }
@@ -88,7 +105,8 @@ export function createUI({ getState, onMutate, onStructuralChange, onModeChange,
       const valueField = item.method === 'rate'
         ? `<div class="unit-input"><input class="money-field" value="${number(item.rate)}" data-expense-value="rate" data-id="${item.id}" inputmode="decimal" aria-label="${escapeHtml(item.name)} 비율"><b>%</b></div>`
         : `<div><div class="unit-input"><input class="money-field" value="${formatInput(item.amount)}" data-expense-value="amount" data-id="${item.id}" inputmode="numeric" aria-label="${escapeHtml(item.name)} 금액"><b>원</b></div>${estimateButton}</div>`;
-      const calculated = item.method === 'rate' ? `<small data-calculated-expense="${item.id}">${won(revenueTotal * number(item.rate, { max: 100 }) / 100)}</small>` : '';
+      const lodgingRevenue = d.revenues.filter((revenue) => revenue.type === 'lodging').reduce((total, revenue) => total + number(revenue.amount), 0);
+      const calculated = item.method === 'rate' ? `<small data-calculated-expense="${item.id}">${won(expenseAmount(item, revenueTotal, lodgingRevenue))}</small>` : '';
       return `<div class="item-row expense" data-row-id="${item.id}"><div><input value="${escapeHtml(item.name)}" data-item-name="expense" data-id="${item.id}" aria-label="비용 항목명">${calculated}</div>${valueField}<select data-expense-category data-id="${item.id}" aria-label="${escapeHtml(item.name)} 구분"><option value="fixed" ${item.category === 'fixed' ? 'selected' : ''}>고정비</option><option value="variable" ${item.category === 'variable' ? 'selected' : ''}>변동비</option></select><button class="icon-button" data-remove="expense" data-id="${item.id}" type="button" aria-label="${escapeHtml(item.name)} 삭제">×</button>${item.method === 'rate' || item.name.includes('수수료') ? `<button type="button" class="method-toggle" data-method-toggle="${item.id}">${item.method === 'rate' ? '직접 금액으로 입력' : '매출 비율로 입력'}</button>` : ''}</div>`;
     }).join('');
   }
@@ -98,7 +116,10 @@ export function createUI({ getState, onMutate, onStructuralChange, onModeChange,
     $('#simple-pyeong').textContent = `${(number(state().simple.area) / 3.3058).toFixed(1)}평 · 공과금 추정 기준`;
     $('#simple-primary-results').innerHTML = primaryCards(result, true);
     $('#simple-secondary-results').innerHTML = secondaryMetrics(result, true);
-    const names = { rent: '월 임대료', payroll: '총 급여', payrollBurden: '4대보험 등 사업주 부담 추정치', electricity: '전기요금 추정치', water: '수도요금 추정치', gas: '가스요금 추정치', platform: '플랫폼 및 결제 비용 예상치', pmsCms: 'PMS/CMS 추정치', communications: '통신비 추정치', insurance: '보험료 추정치', accounting: '세무 기장료 추정치', maintenance: '시설보수비 추정치', amenities: '어매니티 추정치', laundry: '세탁비 추정치', supplies: '소모품비 추정치', other: '기타 운영비 추정치' };
+    const composition = $('#simple-revenue-composition');
+    composition.hidden = state().simple.operationType !== 'hybrid';
+    composition.innerHTML = `<h3>예상 매출 구성</h3><div><span>숙박 예상 매출</span><strong>${compactWon(result.lodgingRevenue)} <small>(${won(result.lodgingRevenue)})</small></strong></div><div><span>달방 예상 매출</span><strong>${compactWon(result.monthlyStayRevenue)} <small>(${won(result.monthlyStayRevenue)})</small></strong></div><div class="total"><span>총 예상 매출</span><strong>${compactWon(result.revenue)} <small>(${won(result.revenue)})</small></strong></div>`;
+    const names = { rent: '월 임대료', cleaningLabor: '청소 인건비 추정치', payrollBurden: '4대보험 등 사업주 부담 추정치', electricity: '전기요금 추정치', water: '수도요금 추정치', gas: '가스요금 추정치', platform: '플랫폼 및 결제 비용 예상치', pmsCms: 'PMS/CMS 추정치', communications: '통신비 추정치', insurance: '보험료 월 환산 추정치', accounting: '세무 기장료 추정치', amenities: '어매니티·기본 소모품 추정치', laundry: '외부 세탁비 추정치' };
     $('#simple-breakdown').innerHTML = Object.entries(result.details).map(([key, value]) => `<div class="breakdown-row"><span>${names[key]}</span><strong>${won(value)}</strong></div>`).join('');
   }
 
@@ -113,7 +134,7 @@ export function createUI({ getState, onMutate, onStructuralChange, onModeChange,
     $('#variable-total').textContent = won(result.variable);
     state().detailed.expenses.filter((item) => item.method === 'rate').forEach((item) => {
       const output = document.querySelector(`[data-calculated-expense="${item.id}"]`);
-      if (output) output.textContent = won(result.revenue * number(item.rate, { max: 100 }) / 100);
+      if (output) output.textContent = won(expenseAmount(item, result.revenue, result.lodgingRevenue));
     });
     const rooms = number(state().detailed.rooms);
     const used = number(state().detailed.hybrid.lodgingRooms) + number(state().detailed.hybrid.monthlyRooms);
@@ -140,7 +161,8 @@ export function createUI({ getState, onMutate, onStructuralChange, onModeChange,
     else if (button.id === 'to-detailed') onTransfer();
     else if (button.dataset.add) onAdd(button.dataset.add);
     else if (button.dataset.remove) onRemove(button.dataset.remove, button.dataset.id);
-    else if (button.dataset.quickRevenue) onMutate(['simple', 'revenuePerRoom'], number(button.dataset.quickRevenue));
+    else if (button.dataset.quickLodgingRevenue) onMutate(['simple', 'lodgingRevenuePerRoom'], number(button.dataset.quickLodgingRevenue));
+    else if (button.dataset.quickMonthlyRevenue) onMutate(['simple', 'monthlyStayRevenuePerRoom'], number(button.dataset.quickMonthlyRevenue));
     else if (button.dataset.detailQuickRevenue) { $('#detail-per-room').value = formatInput(button.dataset.detailQuickRevenue); }
     else if (button.id === 'apply-room-revenue') onStructuralChange('applyRoomRevenue', number($('#detail-per-room').value));
     else if (button.dataset.expenseTemplate) onStructuralChange('addExpenseTemplate', EXPENSE_TEMPLATES[number(button.dataset.expenseTemplate)]);
@@ -151,7 +173,12 @@ export function createUI({ getState, onMutate, onStructuralChange, onModeChange,
 
   document.addEventListener('input', (event) => {
     const input = event.target;
-    if (input.matches('[data-simple]') && input.tagName !== 'SELECT') { const value = number(input.value); formatNumericInput(input, value); onMutate(['simple', input.dataset.simple], value, false); }
+    if (input.matches('[data-simple]') && input.tagName !== 'SELECT') {
+      const unit = SIMPLE_MONEY_UNITS[input.dataset.simple];
+      const displayValue = number(input.value);
+      if (!unit) formatNumericInput(input, displayValue);
+      onMutate(['simple', input.dataset.simple], unit ? toWon(displayValue, unit) : displayValue, false);
+    }
     else if (input.matches('[data-detail]') && input.tagName !== 'SELECT') { const value = number(input.value); formatNumericInput(input, value); onMutate(['detailed', input.dataset.detail], value, false); }
     else if (input.matches('[data-hybrid]')) { const value = number(input.value); formatNumericInput(input, value); onMutate(['detailed', 'hybrid', input.dataset.hybrid], value, false); }
     else if (input.dataset.itemName) onMutate(['detailed', `${input.dataset.itemName}s`, input.dataset.id, 'name'], input.value, false, true);
@@ -161,8 +188,8 @@ export function createUI({ getState, onMutate, onStructuralChange, onModeChange,
 
   document.addEventListener('change', (event) => {
     const input = event.target;
-    if (input.matches('[data-simple]')) onMutate(['simple', input.dataset.simple], input.value);
-    else if (input.matches('[data-detail]')) onMutate(['detailed', input.dataset.detail], input.value);
+    if (input.matches('[data-simple]') && input.tagName === 'SELECT') onMutate(['simple', input.dataset.simple], input.value);
+    else if (input.matches('[data-detail]') && input.tagName === 'SELECT') onMutate(['detailed', input.dataset.detail], input.value);
     else if (input.matches('[data-expense-category]')) onMutate(['detailed', 'expenses', input.dataset.id, 'category'], input.value, false, true);
   });
 
