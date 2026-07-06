@@ -24,6 +24,8 @@ const monthlyStayGuide = await readFile(join(publicRoot, 'guide', 'monthly-stay-
 const hybridGuide = await readFile(join(publicRoot, 'guide', 'hybrid-operation-profit.html'), 'utf8');
 const roiGuide = await readFile(join(publicRoot, 'guide', 'motel-roi-payback.html'), 'utf8');
 const rentGuide = await readFile(join(publicRoot, 'guide', 'motel-rent-affordability.html'), 'utf8');
+const operatingCostGuide = await readFile(join(publicRoot, 'guide', 'motel-operating-cost.html'), 'utf8');
+const investmentChecklistGuide = await readFile(join(publicRoot, 'guide', 'lodging-investment-checklist.html'), 'utf8');
 const lodgingExampleHtml = await readFile(join(publicRoot, 'examples', '30-room-lodging-example.html'), 'utf8');
 const hybridExampleHtml = await readFile(join(publicRoot, 'examples', '32-room-hybrid-example.html'), 'utf8');
 const lodgingTwentyHtml = await readFile(join(publicRoot, 'examples', '20-room-lodging-example.html'), 'utf8');
@@ -34,15 +36,17 @@ const guideFiles = (await readdir(join(publicRoot, 'guide'))).filter((file) => f
 assert.deepEqual(guideFiles, [
   'hotel-profit-calculation.html',
   'hybrid-operation-profit.html',
+  'lodging-investment-checklist.html',
   'lodging-platform-fee.html',
   'monthly-stay-profit.html',
   'motel-break-even-point.html',
   'motel-labor-cost.html',
   'motel-laundry-cost.html',
+  'motel-operating-cost.html',
   'motel-rent-affordability.html',
   'motel-revenue-per-room.html',
   'motel-roi-payback.html'
-], '가이드 파일은 기존 7개와 3차 신규 3개여야 함');
+], '전문 가이드 파일은 6차 A 신규 2개를 포함해 정확히 12개여야 함');
 const exampleFiles = (await readdir(join(publicRoot, 'examples'))).filter((file) => file.endsWith('.html')).sort();
 assert.deepEqual(exampleFiles, ['20-room-lodging-example.html', '30-room-lodging-example.html', '30-room-monthly-stay-example.html', '32-room-hybrid-example.html', '35-room-lodging-example.html'], '대표 사례 페이지는 정확히 5개여야 함');
 
@@ -142,6 +146,38 @@ assertHtmlValues(hybridExampleHtml, hybridScenario, ['lodgingRevenue', 'monthlyS
 assertHtmlValues(lodgingTwentyHtml, lodgingTwentyScenario, coreScenarioKeys);
 assertHtmlValues(lodgingThirtyFiveHtml, lodgingThirtyFiveScenario, coreScenarioKeys);
 assertHtmlValues(monthlyThirtyHtml, monthlyThirtyScenario, ['monthlyStayRevenue', ...coreScenarioKeys]);
+
+const scopedLandingValue = (html, scenarioId, key) => {
+  const scope = html.match(new RegExp(`<tr[^>]*data-landing-scenario="${scenarioId}"[\\s\\S]*?<\\/tr>`))?.[0];
+  assert.ok(scope, `신규 랜딩 사례 범위 누락: ${scenarioId}`);
+  return htmlEngineValue(scope, key);
+};
+for (const [scenarioId, result, keys] of [
+  ['lodging-20', lodgingTwentyScenario, ['revenue', 'expense', 'monthlyProfit']],
+  ['lodging-35', lodgingThirtyFiveScenario, ['revenue', 'expense', 'monthlyProfit']],
+  ['monthly-30', monthlyThirtyScenario, ['revenue', 'expense', 'monthlyProfit']]
+]) {
+  for (const key of keys) assert.ok(Math.abs(scopedLandingValue(operatingCostGuide, scenarioId, key) - result[key]) < 0.001, `운영비 랜딩 사례 값 불일치: ${scenarioId} ${key}`);
+}
+for (const [scenarioId, result] of [['lodging-30', lodgingScenario], ['hybrid-32', hybridScenario]]) {
+  for (const key of ['revenue', 'expense', 'monthlyProfit', 'roi', 'paybackYears']) assert.ok(Math.abs(scopedLandingValue(investmentChecklistGuide, scenarioId, key) - result[key]) < 0.001, `매물 검토 랜딩 사례 값 불일치: ${scenarioId} ${key}`);
+}
+for (const text of ['월세', '청소 인건비', '사업주 부담 추정치', '전기·수도·가스', '플랫폼·결제', '외주 린넨·세탁', 'PMS/CMS', '통신비', '어매니티', '보험료·기장료']) assert.ok(operatingCostGuide.includes(text), `운영비 랜딩 항목 누락: ${text}`);
+assert.match(operatingCostGuide, /숙박형:.*전체 객실 수 기준/s);
+assert.match(operatingCostGuide, /달방형.*기본 0원/s);
+assert.match(operatingCostGuide, /혼합형.*숙박 객실 수 기준/s);
+assert.match(operatingCostGuide, /숙박 객실이 1실 이상이면 전체 객실 수 기준/);
+for (const step of ['운영방식과 객실 구성', '객실당 예상 월매출', '총 월매출과 전체 운영비', '월 영업이익과 영업이익률', '총 투자금', 'ROI와 회수기간', '민감한 입력값']) assert.ok(investmentChecklistGuide.includes(step), `매물 검토 순서 누락: ${step}`);
+assert.match(investmentChecklistGuide, /\/guide\.html#profitability-examples-title/);
+assert.match(operatingCostGuide, /\/guide\.html#profitability-examples-title/);
+assert.match(guideHub, /\/guide\/motel-operating-cost\.html/);
+assert.match(guideHub, /\/guide\/lodging-investment-checklist\.html/);
+assert.match(breakEvenGuide, /\/guide\/motel-operating-cost\.html/);
+assert.match(rentGuide, /\/guide\/lodging-investment-checklist\.html/);
+
+const guideHtmlFiles = await Promise.all(guideFiles.map((file) => readFile(join(publicRoot, 'guide', file), 'utf8')));
+const guideH1s = guideHtmlFiles.map((html) => html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)?.[1].replace(/<[^>]+>/g, '').trim());
+assert.equal(new Set(guideH1s).size, guideH1s.length, '전문 가이드 H1 완전 중복');
 
 const guideScenarios = new Map([
   ['lodging-20', lodgingTwentyScenario],

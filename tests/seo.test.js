@@ -11,10 +11,12 @@ const corePages = ['index.html', 'about.html', 'guide.html', 'privacy.html', 'di
 const guidePages = [
   'guide/hotel-profit-calculation.html',
   'guide/hybrid-operation-profit.html',
+  'guide/lodging-investment-checklist.html',
   'guide/lodging-platform-fee.html',
   'guide/motel-break-even-point.html',
   'guide/motel-labor-cost.html',
   'guide/motel-laundry-cost.html',
+  'guide/motel-operating-cost.html',
   'guide/motel-rent-affordability.html',
   'guide/motel-revenue-per-room.html',
   'guide/motel-roi-payback.html',
@@ -37,6 +39,7 @@ const expectedUrls = new Map([
 const canonicalUrls = [];
 const titles = new Set();
 const descriptions = new Set();
+const headings = new Set();
 
 assert.equal(SITE_CONFIG.siteUrl, siteUrl, '중앙 사이트 URL 설정 불일치');
 for (const page of corePages) {
@@ -68,12 +71,15 @@ for (const page of pages) {
   const ogUrl = html.match(/<meta\s+property="og:url"\s+content="([^"]+)"/i)?.[1];
   const title = html.match(/<title>([^<]+)<\/title>/i)?.[1];
   const description = html.match(/<meta\s+name="description"\s+content="([^"]+)"/i)?.[1];
+  const heading = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)?.[1].replace(/<[^>]+>/g, '').trim();
   assert.equal(canonical, expectedUrls.get(page), `${page}: canonical URL 불일치`);
   assert.equal(ogUrl, expectedUrls.get(page), `${page}: og:url 불일치`);
   assert.ok(!titles.has(title), `${page}: title 중복`);
   assert.ok(!descriptions.has(description), `${page}: description 중복`);
+  assert.ok(!headings.has(heading), `${page}: h1 중복`);
   titles.add(title);
   descriptions.add(description);
+  headings.add(heading);
   canonicalUrls.push(canonical);
 
   const structuredData = [...html.matchAll(/<script(?:\s+id="[^"]+")?\s+type="application\/ld\+json">([\s\S]*?)<\/script>/gi)]
