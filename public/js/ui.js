@@ -2,6 +2,7 @@ import { LODGING_REVENUE_PRESETS, MONTHLY_STAY_REVENUE_PRESETS } from './config/
 import { EXPENSE_TEMPLATES } from './config/expense-templates.js';
 import { REVENUE_TEMPLATES } from './config/revenue-templates.js';
 import { estimateSimple, calculateDetailed, compareScenarios, expenseAmount } from './calculator.js';
+import { createSimpleAnalysisShareModel, downloadSimpleAnalysisImage, shareSimpleAnalysis } from './share.js';
 import { compactWon, formatDecimalInput, formatInput, formatWonToBaekmanwon, formatWonToEokwon, formatWonToManwon, fromWon, number, percent, toWon, won, years } from './utils.js';
 
 const $ = (selector) => document.querySelector(selector);
@@ -56,6 +57,9 @@ function secondaryMetrics(result, simple = false) {
 
 export function createUI({ getState, onMutate, onStructuralChange, onModeChange, onTransfer, onDemo, onReset, onAdd, onRemove, onApplyEstimate }) {
   const state = () => getState();
+  let simpleResult;
+  let sharing = false;
+  let generatingImage = false;
 
   function renderMode() {
     const mode = state().mode;
@@ -117,6 +121,7 @@ export function createUI({ getState, onMutate, onStructuralChange, onModeChange,
 
   function renderSimpleResults() {
     const result = estimateSimple(state().simple);
+    simpleResult = result;
     $('#simple-pyeong').textContent = `${(number(state().simple.area) / 3.3058).toFixed(1)}평 · 공과금 추정 기준`;
     $('#simple-primary-results').innerHTML = primaryCards(result, true);
     $('#simple-secondary-results').innerHTML = secondaryMetrics(result, true);
@@ -163,11 +168,64 @@ export function createUI({ getState, onMutate, onStructuralChange, onModeChange,
   }
   function renderAll() { renderMode(); renderInputs(); renderQuickButtons(); renderLists(); renderResults(); }
 
-  document.addEventListener('click', (event) => {
+  function shareModel() {
+    const result = simpleResult || estimateSimple(state().simple);
+    return createSimpleAnalysisShareModel(result, state().simple, getProfitMarginStatus(result.margin));
+  }
+
+  function setShareFeedback(message, isError = false) {
+    const feedback = $('#simple-share-feedback');
+    feedback.textContent = message;
+    feedback.dataset.state = isError ? 'error' : 'success';
+  }
+
+  async function handleSimpleShare() {
+    if (sharing) return;
+    sharing = true;
+    const button = $('#share-simple-result');
+    button.disabled = true;
+    setShareFeedback('공유 내용을 준비하고 있어요.');
+    try {
+      const outcome = await shareSimpleAnalysis(shareModel());
+      if (outcome.status === 'shared') setShareFeedback('공유 내용을 준비했어요.');
+      else if (outcome.status === 'copied') setShareFeedback('공유 문구를 복사했어요. 카카오톡 등에 붙여넣어 공유해보세요.');
+      else if (outcome.status === 'cancelled') setShareFeedback('');
+      else setShareFeedback('공유에 실패했습니다. 다시 시도해주세요.', true);
+    } catch {
+      setShareFeedback('공유에 실패했습니다. 다시 시도해주세요.', true);
+    } finally {
+      sharing = false;
+      button.disabled = false;
+    }
+  }
+
+  async function handleSimpleImageDownload() {
+    if (generatingImage) return;
+    generatingImage = true;
+    const button = $('#save-simple-image');
+    const originalText = button.textContent;
+    button.disabled = true;
+    button.textContent = '이미지 생성 중...';
+    setShareFeedback('공유 이미지를 만들고 있어요.');
+    try {
+      await downloadSimpleAnalysisImage(shareModel());
+      setShareFeedback('결과 이미지를 저장했어요.');
+    } catch {
+      setShareFeedback('이미지 저장에 실패했습니다. 다시 시도해주세요.', true);
+    } finally {
+      generatingImage = false;
+      button.disabled = false;
+      button.textContent = originalText;
+    }
+  }
+
+  document.addEventListener('click', async (event) => {
     const button = event.target.closest('button'); if (!button) return;
     if (button.dataset.mode) onModeChange(button.dataset.mode);
     else if (button.id === 'load-demo') onDemo();
     else if (button.id === 'reset-all') onReset();
+    else if (button.id === 'share-simple-result') await handleSimpleShare();
+    else if (button.id === 'save-simple-image') await handleSimpleImageDownload();
     else if (button.id === 'to-detailed') onTransfer();
     else if (button.dataset.add) onAdd(button.dataset.add);
     else if (button.dataset.remove) onRemove(button.dataset.remove, button.dataset.id);
