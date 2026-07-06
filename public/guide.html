@@ -19,13 +19,13 @@
     <article class="container content-page prose">
       <section class="guide-hub" aria-labelledby="guide-hub-title">
         <h2 id="guide-hub-title">핵심 질문부터 살펴보기</h2>
-        <p>공식의 의미를 먼저 확인하고, 운영비와 청소 인건비가 손익에 어떤 영향을 주는지 순서대로 살펴볼 수 있습니다.</p>
+        <p>매출과 손익 공식을 먼저 확인하고, 운영비 항목과 운영방식에 따른 차이를 관련 질문별로 살펴볼 수 있습니다.</p>
         <h3>수익성 계산</h3>
-        <div class="guide-card-grid"><article class="guide-card"><h4><a href="/guide/hotel-profit-calculation.html">숙박업 수익률은 어떻게 계산할까?</a></h4><p>월 영업이익, 영업이익률, 연 수익률과 회수기간의 계산 조건을 설명합니다.</p></article></div>
+        <div class="guide-card-grid"><article class="guide-card"><h4><a href="/guide/hotel-profit-calculation.html">숙박업 수익률은 어떻게 계산할까?</a></h4><p>월 영업이익, 영업이익률, 연 수익률과 회수기간의 계산 조건을 설명합니다.</p></article><article class="guide-card"><h4><a href="/guide/motel-break-even-point.html">모텔은 월매출이 얼마여야 적자를 피할까?</a></h4><p>월세와 전체 운영비, 매출 연동 비용을 함께 반영해 손익분기점을 검토합니다.</p></article><article class="guide-card"><h4><a href="/guide/motel-revenue-per-room.html">모텔 객실당 월매출은 어떻게 해석할까?</a></h4><p>객실 수와 객실당 예상 월매출로 총매출을 계산하고 운영방식별 매출을 구분합니다.</p></article></div>
         <h3>운영비 추정</h3>
-        <div class="guide-card-grid"><article class="guide-card"><h4><a href="/guide/motel-break-even-point.html">모텔은 월매출이 얼마여야 적자를 피할까?</a></h4><p>월세뿐 아니라 인건비, 공과금과 매출 연동 비용까지 함께 보는 방법입니다.</p></article><article class="guide-card"><h4><a href="/guide/motel-labor-cost.html">객실 수에 따른 청소 인건비는 어떻게 추정할까?</a></h4><p>숙박형·달방형·혼합형에 적용되는 간편 분석용 청소비 기준을 공개합니다.</p></article></div>
-        <h3>운영방식 비교</h3>
-        <p><a href="#operating-models">숙박형·달방형·혼합형의 매출 입력과 비용 가정</a>을 확인하세요.</p>
+        <div class="guide-card-grid"><article class="guide-card"><h4><a href="/guide/motel-labor-cost.html">객실 수에 따른 청소 인건비는 어떻게 추정할까?</a></h4><p>숙박형·달방형·혼합형에 적용되는 간편 분석용 청소비 기준을 공개합니다.</p></article><article class="guide-card"><h4><a href="/guide/motel-laundry-cost.html">외주 린넨·세탁비는 어떻게 추정할까?</a></h4><p>35객실 참고 모델과 객실 회전, 자체 세탁에 따른 비용 차이를 설명합니다.</p></article><article class="guide-card"><h4><a href="/guide/lodging-platform-fee.html">플랫폼 비용은 어느 매출에 적용할까?</a></h4><p>숙박형·달방형·혼합형에서 플랫폼·결제 비용의 계산 기준을 구분합니다.</p></article></div>
+        <h3>운영방식</h3>
+        <div class="guide-card-grid"><article class="guide-card"><h4><a href="/guide/monthly-stay-profit.html">달방형 수익 구조는 숙박형과 어떻게 다를까?</a></h4><p>장기 점유에 따른 매출, 청소, 세탁, PMS/CMS와 플랫폼 비용 기본 가정을 설명합니다.</p></article></div>
         <h3>사례 분석</h3>
         <p>실제 사례로 오인될 수 있는 임의 수치를 제시하지 않습니다. 대신 <a href="#verification">결과를 실제 장부와 계약서로 검증하는 방법</a>을 안내합니다.</p>
       </section>
@@ -37,7 +37,7 @@
       <p>보증금과 권리금은 억원, 월 임대료는 백만원, 객실당 월매출은 만원 단위로 입력합니다. 예를 들어 보증금 5천만원은 0.5, 월세 2,500만원은 25, 객실당 매출 120만원은 120으로 입력합니다. 계산과 자동 저장은 기존과 동일하게 원 단위 내부값을 사용합니다.</p>
       <h3>매출과 플랫폼·결제비용</h3>
       <p>숙박 중심에서는 숙박 객실당 매출, 달방 중심에서는 달방 객실당 매출을 입력합니다. 혼합형에서는 두 객실당 매출을 별도로 입력하며, 숙박 매출은 숙박 객실 수×숙박 객실당 매출, 달방 매출은 달방 객실 수×달방 객실당 매출로 계산합니다. 운영방식을 바꿔도 두 입력값은 각각 보존됩니다.</p>
-      <p>플랫폼 및 결제비용은 숙박 매출에만 설정 비율을 적용하며 달방 매출에는 부과하지 않습니다. 빠른 선택값은 입력 편의를 위한 프리셋일 뿐 실제 시장 평균이 아닙니다.</p>
+      <p>플랫폼 및 결제비용은 숙박 매출에만 설정 비율을 적용하며 달방 매출에는 부과하지 않습니다. 빠른 선택값은 입력 편의를 위한 프리셋일 뿐 실제 시장 평균이 아닙니다. 자세한 적용 구조는 <a href="/guide/lodging-platform-fee.html">숙박 매출과 달방 매출의 플랫폼 비용 구분</a>에서 확인할 수 있습니다.</p>
 
       <h2>2. 자동 비용 추정 기준</h2>
       <p>아래 값은 매물 1차 검토를 위한 참고 추정치입니다. 확정 견적이나 공인된 업계 평균이 아니므로 실제 계약 자료가 있다면 상세 분석에서 교체하세요.</p>
@@ -60,7 +60,7 @@
       <p>객실당 월 5만원으로 추정합니다. 휴지, 비누 등 기본 객실 소모품도 간편 분석에서는 어매니티 비용에 포함합니다. 실제 사용량은 운영 형태와 객실 회전율에 따라 달라질 수 있습니다.</p>
       <h3>외부 세탁비</h3>
       <p>35객실 기준 월 약 400만원의 외부 세탁 참고값을 객실 수에 비례해 환산합니다. 침구 교체 빈도, 객실 회전율, 세탁물량, 지역과 계약 조건에 따라 실제 비용은 달라질 수 있습니다.</p>
-      <p>달방 중심 간편 분석에서는 외부 세탁비와 PMS/CMS를 0원으로 처리합니다. 실제로 해당 서비스를 이용한다면 상세 분석에서 직접 비용을 추가하세요.</p>
+      <p>달방 중심 간편 분석에서는 외부 세탁비와 PMS/CMS를 0원으로 처리합니다. 이는 낮은 객실 턴오버와 개인 침구 지참 운영 가능성을 반영한 기본 가정입니다. 실제로 해당 서비스를 이용한다면 상세 분석에서 직접 비용을 추가하세요. 세부 조건은 <a href="/guide/motel-laundry-cost.html">외주 린넨·세탁비 추정 구조</a>와 <a href="/guide/monthly-stay-profit.html">달방형 수익·비용 구조</a>에서 설명합니다.</p>
       <p>자체 세탁으로 바꾸면 운영 조건에 따라 외주 대비 세탁 관련 직접비가 최대 절반 수준까지 줄어들 가능성이 있지만 보장값은 아닙니다. 수도요금, 설비비와 인건비가 늘 수 있으므로 전체 비용을 함께 비교해야 합니다.</p>
       <h3>공과금</h3>
       <p>전기·수도·가스는 연면적과 설정된 면적당 예시 계수를 곱합니다. 최근 고지서를 확보했다면 상세 분석에서 실제 금액으로 교체하세요.</p>

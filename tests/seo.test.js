@@ -10,8 +10,12 @@ const placeholderUrlPattern = /(?:ex(?:ample|maple)\.com|your[-_.]?(?:domain|sit
 const corePages = ['index.html', 'about.html', 'guide.html', 'privacy.html', 'disclaimer.html', 'contact.html'];
 const guidePages = [
   'guide/hotel-profit-calculation.html',
+  'guide/lodging-platform-fee.html',
   'guide/motel-break-even-point.html',
-  'guide/motel-labor-cost.html'
+  'guide/motel-labor-cost.html',
+  'guide/motel-laundry-cost.html',
+  'guide/motel-revenue-per-room.html',
+  'guide/monthly-stay-profit.html'
 ];
 const pages = [...corePages, ...guidePages];
 const expectedUrls = new Map([
@@ -119,6 +123,7 @@ for (const formula of ['월 영업이익', '예상 월매출 − 예상 월 운�
   assert.ok(index.includes(formula), `메인 계산 기준 공식 누락: ${formula}`);
 }
 assert.match(index, /달방형 외주 린넨·세탁비를 0원으로 두는 기본 가정/, '달방형 세탁비 기본 가정 설명 누락');
+assert.doesNotMatch(index, /js\/config\/estimation-config\.js/, '공개 UI에 내부 설정 경로 잔존');
 assert.equal((index.match(/name="google-site-verification"/g) || []).length, 1, 'Google 검증 태그 누락 또는 중복');
 assert.match(index, /<meta\s+name="google-site-verification"\s+content="Kmrve7O_QZcYI0ll4uTlnEJ3qaSIGvetpIIT8S5uNqc"\s*\/?>/i, 'Google 검증 토큰 불일치');
 assert.equal((index.match(/name="google-adsense-account"/g) || []).length, 1, 'Google AdSense 계정 태그 누락 또는 중복');

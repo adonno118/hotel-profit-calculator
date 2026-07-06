@@ -14,13 +14,21 @@ const index = await readFile(join(publicRoot, 'index.html'), 'utf8');
 const profitGuide = await readFile(join(publicRoot, 'guide', 'hotel-profit-calculation.html'), 'utf8');
 const breakEvenGuide = await readFile(join(publicRoot, 'guide', 'motel-break-even-point.html'), 'utf8');
 const laborGuide = await readFile(join(publicRoot, 'guide', 'motel-labor-cost.html'), 'utf8');
+const revenuePerRoomGuide = await readFile(join(publicRoot, 'guide', 'motel-revenue-per-room.html'), 'utf8');
+const laundryGuide = await readFile(join(publicRoot, 'guide', 'motel-laundry-cost.html'), 'utf8');
+const platformGuide = await readFile(join(publicRoot, 'guide', 'lodging-platform-fee.html'), 'utf8');
+const monthlyStayGuide = await readFile(join(publicRoot, 'guide', 'monthly-stay-profit.html'), 'utf8');
 
 const guideFiles = (await readdir(join(publicRoot, 'guide'))).filter((file) => file.endsWith('.html')).sort();
 assert.deepEqual(guideFiles, [
   'hotel-profit-calculation.html',
+  'lodging-platform-fee.html',
+  'monthly-stay-profit.html',
   'motel-break-even-point.html',
-  'motel-labor-cost.html'
-], '1차 작업 신규 가이드 파일은 정확히 3개여야 함');
+  'motel-labor-cost.html',
+  'motel-laundry-cost.html',
+  'motel-revenue-per-room.html'
+], '가이드 파일은 기존 3개와 2차 신규 4개여야 함');
 
 const sample = estimateSimple({
   rooms: 30,
@@ -60,9 +68,26 @@ assert.equal(estimateHybridCleaningCost(15), 3500000);
 assert.match(laborGuide, /ceil\(전체 객실 수 ÷ 20\) × 50만원/);
 assert.match(laborGuide, /floor\(숙박 배정 객실 수 ÷ 15\) × 350만원/);
 
-for (const html of [index, profitGuide, breakEvenGuide, laborGuide]) {
-  assert.doesNotMatch(html, /모든 달방 시설의 세탁비는 0원|달방은 세탁비가 없다/);
-  assert.doesNotMatch(html, /실제 사례입니다|업계 평균입니다|표준 비용입니다/);
+assert.match(revenuePerRoomGuide, /예상 총 월매출 = 운영 객실 수 × 객실당 예상 월매출/);
+assert.match(revenuePerRoomGuide, /혼합형 총매출 = 숙박형 매출 \+ 달방형 매출/);
+assert.match(laundryGuide, /400만원 ÷ 35객실/);
+assert.match(laundryGuide, /StayCalculators 간편 분석을 위한 참고 추정 모델/);
+assert.match(laundryGuide, /개인 침구 지참.*가능/);
+assert.match(monthlyStayGuide, /외주 린넨·세탁비 0원 기본 가정/);
+assert.match(monthlyStayGuide, /개인 침구 지참.*가능/);
+assert.match(monthlyStayGuide, /ceil\(전체 객실 수 ÷ 20\) × 50만원/);
+assert.match(monthlyStayGuide, /PMS\/CMS를 0원/);
+assert.match(platformGuide, /플랫폼·결제 비용 = 숙박 매출 × 설정 비율/);
+assert.match(platformGuide, /총 5,000만원이 아니라 숙박 매출 3,000만원/);
+
+for (const html of [revenuePerRoomGuide, laundryGuide, platformGuide, monthlyStayGuide]) {
+  assert.match(html, /계산 구조 설명을 위한 가상 예시/, '신규 가이드 가상 예시 표시 누락');
+  assert.match(html, /https:\/\/staycalculators\.com\//, '신규 가이드 계산기 CTA 누락');
+}
+
+for (const html of [index, profitGuide, breakEvenGuide, laborGuide, revenuePerRoomGuide, laundryGuide, platformGuide, monthlyStayGuide]) {
+  assert.doesNotMatch(html, /모든 달방 시설의 세탁비는 0원|달방은 세탁비가 없다|달방은 침구가 필요 없다|모든 장기투숙 시설은 세탁비 0원/);
+  assert.doesNotMatch(html, /실제 사례입니다|업계 평균입니다|표준 비용입니다|업계 평균으로/);
 }
 
 console.log('content tests: passed');

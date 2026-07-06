@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>숙박 플랫폼 수수료 계산 | 숙박매출과 달방매출 구분</title>
+  <meta name="description" content="숙박업 플랫폼·결제 비용을 숙박 매출에 적용하는 이유와 숙박형·달방형·혼합형에서 계산 기준이 달라지는 구조를 설명합니다.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <meta property="og:type" content="article"><meta property="og:locale" content="ko_KR"><meta property="og:site_name" content="숙박업 수익률 계산기">
+  <meta property="og:title" content="숙박업 플랫폼 수수료는 총매출 전체에 적용해야 할까?"><meta property="og:description" content="숙박 매출과 달방 매출을 구분해 플랫폼·결제 비용을 추정하는 구조"><meta property="og:url" content="https://staycalculators.com/guide/lodging-platform-fee.html">
+  <meta name="twitter:card" content="summary"><meta name="twitter:title" content="숙박 플랫폼 수수료 계산"><meta name="twitter:description" content="운영방식별 플랫폼·결제 비용 적용 기준">
+  <link rel="canonical" href="https://staycalculators.com/guide/lodging-platform-fee.html"><link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../css/base.css"><link rel="stylesheet" href="../css/layout.css"><link rel="stylesheet" href="../css/components.css"><link rel="stylesheet" href="../css/content.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://staycalculators.com/guide/lodging-platform-fee.html#webpage","url":"https://staycalculators.com/guide/lodging-platform-fee.html","name":"숙박 플랫폼 수수료 계산 | 숙박매출과 달방매출 구분","description":"숙박업 플랫폼·결제 비용을 숙박 매출에 적용하는 이유와 숙박형·달방형·혼합형에서 계산 기준이 달라지는 구조를 설명합니다.","inLanguage":"ko-KR","isPartOf":{"@id":"https://staycalculators.com/#website"},"breadcrumb":{"@id":"https://staycalculators.com/guide/lodging-platform-fee.html#breadcrumb"}},{"@type":"BreadcrumbList","@id":"https://staycalculators.com/guide/lodging-platform-fee.html#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"홈","item":"https://staycalculators.com/"},{"@type":"ListItem","position":2,"name":"숙박업 수익성 가이드","item":"https://staycalculators.com/guide"},{"@type":"ListItem","position":3,"name":"숙박 플랫폼·결제 비용","item":"https://staycalculators.com/guide/lodging-platform-fee.html"}]}]}</script>
+</head>
+<body>
+  <a class="skip-link" href="#main">본문 바로가기</a><header class="site-header"><div class="container header-inner"><a class="brand" href="/">숙박업 수익률 계산기</a><nav aria-label="주요 메뉴"><a href="/">계산기</a><a href="/guide">수익성 가이드</a><a href="/about">소개</a></nav></div></header>
+  <main id="main">
+    <section class="content-hero"><div class="container prose"><nav class="breadcrumb" aria-label="현재 위치"><ol><li><a href="/">홈</a></li><li><a href="/guide">숙박업 수익성 가이드</a></li><li aria-current="page">숙박 플랫폼·결제 비용</li></ol></nav><p class="eyebrow">운영비 추정</p><h1>숙박업 플랫폼 수수료는 총매출 전체에 적용해야 할까?</h1><p class="lead direct-answer">StayCalculators 간편 분석에서는 숙박 수요에서 발생하는 플랫폼·결제 비용을 숙박 매출 부분에 연결해 추정합니다. 숙박형은 숙박 매출 전체, 혼합형은 숙박 배정 객실에서 발생한 매출만 기준으로 하며 달방형 기본 추정값은 0원입니다.</p></div></section>
+    <article class="container content-page prose">
+      <h2>간편 분석의 플랫폼 비용 계산 기준</h2>
+      <div class="formula-box"><strong>플랫폼·결제 비용 = 숙박 매출 × 설정 비율</strong><p>현재 간편 분석 설정 비율은 9%입니다. 이 값은 계산을 위한 참고 계수이며 특정 OTA의 실제 계약 수수료율이나 업계 평균이 아닙니다.</p></div>
+      <ul><li><strong>숙박형:</strong> 전체 예상 월매출이 숙박 매출이므로 그 금액을 기준으로 계산합니다.</li><li><strong>달방형:</strong> 숙박 매출이 0원이므로 플랫폼·결제 비용도 기본 0원으로 추정합니다.</li><li><strong>혼합형:</strong> 숙박 객실 매출에만 설정 비율을 적용하고 달방 객실 매출에는 적용하지 않습니다.</li></ul>
+
+      <h2>혼합형에서 왜 총매출 전체에 수수료를 곱하지 않나?</h2>
+      <p><strong>아래 숫자는 계산 구조 설명을 위한 가상 예시입니다.</strong> 실제 운영 사례나 플랫폼 계약조건이 아닙니다.</p>
+      <ul><li>총 월매출: 5,000만원</li><li>숙박 매출: 3,000만원</li><li>달방 매출: 2,000만원</li><li>플랫폼 비용 계산 기준: 총 5,000만원이 아니라 숙박 매출 3,000만원</li></ul>
+      <p>계산 엔진은 숙박 객실 수×숙박 객실당 예상 월매출과 달방 객실 수×달방 객실당 예상 월매출을 분리합니다. 그중 숙박 매출만 플랫폼 비용 함수에 전달하므로 달방 매출이 커져도 이 기본 비용이 자동으로 함께 증가하지 않습니다.</p>
+
+      <h2>달방 매출에도 플랫폼 비용이 생길 수 있나?</h2>
+      <p>생길 수 있습니다. 달방형 기본 0원은 플랫폼을 사용하지 않는 조건을 둔 StayCalculators 간편 분석 기본 가정입니다. 실제로 장기 투숙자를 모집하면서 중개 플랫폼, 광고 상품, 예약 서비스나 결제 서비스를 이용하면 중개비·광고비·결제 비용이 발생할 수 있습니다. 해당 금액은 상세 분석에서 직접 추가해야 합니다.</p>
+      <h2>실제 플랫폼 수수료는 무엇에 따라 달라지나?</h2>
+      <ul><li>플랫폼 및 결제 사업자와의 계약조건</li><li>중개, 광고, 노출 상품과 결제 서비스의 조합</li><li>정액·정률 과금 방식과 수수료 계산 대상</li><li>부가세, 할인 분담과 정산 조건</li><li>직접 예약과 플랫폼 예약의 매출 비중</li></ul>
+      <p>실제 정산서의 공제 항목이 모두 같은 기준 매출에 같은 비율로 적용된다고 가정하지 마세요. 계약서와 월별 정산서를 확인해 숙박 매출 중 플랫폼을 통과한 금액, 정률 비용과 별도 광고비를 나누어 보는 편이 정확합니다.</p>
+      <div class="article-note"><strong>상세 분석 입력</strong><p>상세 분석에서 플랫폼 비용을 비율로 입력하면 숙박 유형으로 등록된 매출만 기준으로 계산합니다. 고정 광고비나 별도 결제비처럼 정률이 아닌 항목은 실제 월 금액으로 따로 입력할 수 있습니다.</p></div>
+
+      <div class="page-nav"><a class="button primary" href="https://staycalculators.com/">숙박 매출로 플랫폼 비용 계산하기</a><a class="button secondary" href="/guide">가이드 허브로 돌아가기</a></div>
+      <section class="related-guides" aria-labelledby="related-title"><h2 id="related-title">관련 가이드</h2><ul><li><a href="/guide/monthly-stay-profit.html">달방형의 플랫폼 비용 기본 가정</a></li><li><a href="/guide/motel-break-even-point.html">플랫폼 비용을 포함한 손익분기점</a></li></ul></section>
+    </article>
+  </main>
+  <footer class="site-footer"><div class="container footer-grid"><strong>숙박업 수익률 계산기</strong><nav aria-label="하단 메뉴"><a href="/">계산기</a><a href="/guide">수익성 가이드</a><a href="/privacy">개인정보처리방침</a></nav></div></footer>
+</body>
+</html>
