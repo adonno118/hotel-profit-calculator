@@ -83,6 +83,10 @@ assert.match(robots, /User-agent:\s*\*/i);
 assert.match(robots, /Allow:\s*\//i);
 assert.match(robots, new RegExp(`Sitemap:\\s*${siteUrl.replaceAll('.', '\\.')}\\/sitemap\\.xml`, 'i'));
 
+const adsText = await readFile(join(root, 'ads.txt'), 'utf8');
+assert.equal(adsText.trim(), 'google.com, pub-6886067012627803, DIRECT, f08c47fec0942fa0', 'ads.txt 판매자 항목 불일치');
+assert.equal(adsText.trim().split(/\r?\n/).length, 1, 'ads.txt는 정확히 한 줄이어야 함');
+
 const index = await readFile(join(root, 'index.html'), 'utf8');
 assert.equal((index.match(/name="google-site-verification"/g) || []).length, 1, 'Google 검증 태그 누락 또는 중복');
 assert.match(index, /<meta\s+name="google-site-verification"\s+content="Kmrve7O_QZcYI0ll4uTlnEJ3qaSIGvetpIIT8S5uNqc"\s*\/?>/i, 'Google 검증 토큰 불일치');
@@ -99,6 +103,11 @@ for (const item of schema['@graph']) assert.equal(item.url, `${siteUrl}/`, `${it
 const privacy = await readFile(join(root, 'privacy.html'), 'utf8');
 assert.match(privacy, /https:\/\/policies\.google\.com\/technologies\/partner-sites/i, 'Google 데이터 처리 안내 링크 누락');
 assert.match(privacy, /https:\/\/adssettings\.google\.com\//i, 'Google 광고 설정 링크 누락');
+assert.doesNotMatch(privacy, /현재 코드에는 Google AdSense 광고 코드가 적용되어 있지 않습니다/, '과거 AdSense 미적용 문구 잔존');
+for (const disclosure of ['쿠키', '웹 비콘', 'IP 주소', '브라우저 정보', '기기 관련 정보', '쿠키 식별자', 'localStorage', '제3자 광고']) {
+  assert.ok(privacy.includes(disclosure), `개인정보처리방침 필수 고지 누락: ${disclosure}`);
+}
+assert.match(privacy, /심사·승인 상태와 운영 설정에 따라/, 'AdSense 상태의 조건부 표현 누락');
 assert.match(privacy, /dirdhfm123@gmail\.com/i, '문의 이메일 누락');
 
 console.log('seo tests: passed');
