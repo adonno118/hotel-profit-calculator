@@ -26,10 +26,89 @@
         <div class="guide-card-grid"><article class="guide-card"><h4><a href="/guide/motel-labor-cost.html">객실 수에 따른 청소 인건비는 어떻게 추정할까?</a></h4><p>숙박형·달방형·혼합형에 적용되는 간편 분석용 청소비 기준을 공개합니다.</p></article><article class="guide-card"><h4><a href="/guide/motel-laundry-cost.html">외주 린넨·세탁비는 어떻게 추정할까?</a></h4><p>35객실 참고 모델과 객실 회전, 자체 세탁에 따른 비용 차이를 설명합니다.</p></article><article class="guide-card"><h4><a href="/guide/lodging-platform-fee.html">플랫폼 비용은 어느 매출에 적용할까?</a></h4><p>숙박형·달방형·혼합형에서 플랫폼·결제 비용의 계산 기준을 구분합니다.</p></article></div>
         <h3>운영방식</h3>
         <div class="guide-card-grid"><article class="guide-card"><h4><a href="/guide/monthly-stay-profit.html">달방형 수익 구조는 숙박형과 어떻게 다를까?</a></h4><p>장기 점유에 따른 매출, 청소, 세탁, PMS/CMS와 플랫폼 비용 기본 가정을 설명합니다.</p></article><article class="guide-card"><h4><a href="/guide/hybrid-operation-profit.html">숙박과 달방을 함께 운영하면 수익 구조가 어떻게 달라질까?</a></h4><p>객실 배정별 매출과 혼합형 청소·세탁·플랫폼 비용의 실제 계산 기준을 설명합니다.</p></article></div>
-        <h3>수익성 사례</h3>
-        <div class="guide-card-grid"><article class="guide-card"><h4><a href="/examples/20-room-lodging-example.html">20객실 숙박형 계산 시나리오</a></h4><p>같은 월세 조건에서 소형 숙박형의 매출과 고정비 부담 구조를 확인합니다.</p></article><article class="guide-card"><h4><a href="/examples/30-room-lodging-example.html">30객실 숙박형 계산 시나리오</a></h4><p>객실당 월매출 180만원을 가정해 매출·운영비·영업이익과 투자 지표를 계산합니다.</p></article><article class="guide-card"><h4><a href="/examples/35-room-lodging-example.html">35객실 숙박형 계산 시나리오</a></h4><p>외주 세탁비 참고 모델의 35실 기준점과 숙박형 규모별 비용을 확인합니다.</p></article><article class="guide-card"><h4><a href="/examples/30-room-monthly-stay-example.html">30객실 달방형 계산 시나리오</a></h4><p>장기투숙 매출과 청소·세탁·PMS/CMS·플랫폼 비용의 기본 가정을 확인합니다.</p></article><article class="guide-card"><h4><a href="/examples/32-room-hybrid-example.html">32객실 숙박·달방 혼합형 계산 시나리오</a></h4><p>숙박 20실·달방 12실의 매출과 운영방식별 비용 기준을 실제 엔진 결과로 확인합니다.</p></article></div>
-        <h3>사례 분석</h3>
-        <p>위 사례는 계산 구조를 설명하는 가상 시나리오이며 실제 매물이나 운영 성과를 뜻하지 않습니다. <a href="#verification">결과를 실제 장부와 계약서로 검증하는 방법</a>도 함께 확인하세요.</p>
+        <div class="page-nav guide-entry-actions"><a class="button primary" href="#profitability-examples-title">수익성 사례 비교하기</a><a class="button secondary" href="https://staycalculators.com/">내 조건으로 직접 계산하기</a></div>
+
+        <h3 id="profitability-examples-title">수익성 사례 비교</h3>
+        <p>아래 5개 사례는 동일한 계산 엔진으로 만든 가상 시나리오입니다. 실제 매물·운영 성과·시장 전체의 기준이나 수익 보장을 의미하지 않습니다.</p>
+
+        <section class="example-finder" aria-labelledby="example-finder-title">
+          <h4 id="example-finder-title">내 조건과 가까운 사례 찾기</h4>
+          <p>운영방식과 객실 규모를 선택하면 아래 카드 중 가장 가까운 기존 사례를 표시합니다. 달방형과 혼합형은 현재 각각 한 개 사례만 제공합니다.</p>
+          <form class="example-finder-form" data-example-finder>
+            <label><span>운영방식</span><select name="operationType" id="example-operation"><option value="lodging">숙박형</option><option value="monthly">달방형</option><option value="hybrid">혼합형</option></select></label>
+            <label><span>객실 규모</span><select name="roomScale" id="example-room-scale"><option value="around20">20실 안팎</option><option value="around30">30실 안팎</option><option value="over35">35실 이상</option></select></label>
+            <button class="button primary" type="submit">가까운 사례 표시</button>
+          </form>
+          <p class="finder-result" id="example-finder-result" role="status" aria-live="polite">조건을 선택하면 비교 목록 안에서 가까운 사례를 표시합니다.</p>
+        </section>
+
+        <div class="example-card-grid" data-example-list>
+          <article class="example-card" id="example-20-lodging" data-card-scenario="lodging-20" tabindex="-1">
+            <header><div><p class="example-type">숙박형 · 20실</p><h4><a href="/examples/20-room-lodging-example.html">20실 숙박형</a></h4><p>객실당 월매출 180만원 · 월세 2,000만원</p></div><span class="recommendation-badge" hidden>선택 조건과 가까운 사례</span></header>
+            <dl class="example-card-inputs"><div><dt>총 투자금</dt><dd>7억원</dd></div><div><dt>월매출</dt><dd data-engine-key="revenue" data-engine-value="36000000">3,600만원</dd></div></dl>
+            <dl class="example-card-kpis"><div><dt>월 영업이익</dt><dd data-engine-key="monthlyProfit" data-engine-value="646103.8961038962">약 64.6만원</dd></div><div><dt>영업이익률</dt><dd data-engine-key="margin" data-engine-value="1.7947330447330452">1.79%</dd></div><div><dt>ROI</dt><dd data-engine-key="roi" data-engine-value="1.1076066790352506">1.11%</dd></div></dl>
+            <p class="example-card-support">운영비 <span data-engine-key="expense" data-engine-value="35353896.103896104">약 3,535.4만원</span> · 회수기간 <span data-engine-key="paybackYears" data-engine-value="90.28475711892796">약 90.28년</span></p>
+            <div class="example-card-actions"><a class="button secondary" href="/examples/20-room-lodging-example.html">20실 사례 자세히 보기</a><a href="https://staycalculators.com/">내 조건으로 계산하기</a></div>
+          </article>
+
+          <article class="example-card" id="example-30-lodging" data-card-scenario="lodging-30" tabindex="-1">
+            <header><div><p class="example-type">숙박형 · 30실</p><h4><a href="/examples/30-room-lodging-example.html">30실 숙박형</a></h4><p>객실당 월매출 180만원 · 월세 2,000만원</p></div><span class="recommendation-badge" hidden>선택 조건과 가까운 사례</span></header>
+            <dl class="example-card-inputs"><div><dt>총 투자금</dt><dd>7억원</dd></div><div><dt>월매출</dt><dd data-engine-key="revenue" data-engine-value="54000000">5,400만원</dd></div></dl>
+            <dl class="example-card-kpis"><div><dt>월 영업이익</dt><dd data-engine-key="monthlyProfit" data-engine-value="12365064.935064942">약 1,236.5만원</dd></div><div><dt>영업이익률</dt><dd data-engine-key="margin" data-engine-value="22.89826839826841">22.90%</dd></div><div><dt>ROI</dt><dd data-engine-key="roi" data-engine-value="21.19725417439704">21.20%</dd></div></dl>
+            <p class="example-card-support">운영비 <span data-engine-key="expense" data-engine-value="41634935.06493506">약 4,163.5만원</span> · 회수기간 <span data-engine-key="paybackYears" data-engine-value="4.717592154968086">약 4.72년</span></p>
+            <div class="example-card-actions"><a class="button secondary" href="/examples/30-room-lodging-example.html">30실 사례 자세히 보기</a><a href="https://staycalculators.com/">내 조건으로 계산하기</a></div>
+          </article>
+
+          <article class="example-card" id="example-35-lodging" data-card-scenario="lodging-35" tabindex="-1">
+            <header><div><p class="example-type">숙박형 · 35실</p><h4><a href="/examples/35-room-lodging-example.html">35실 숙박형</a></h4><p>객실당 월매출 180만원 · 월세 2,000만원</p></div><span class="recommendation-badge" hidden>선택 조건과 가까운 사례</span></header>
+            <dl class="example-card-inputs"><div><dt>총 투자금</dt><dd>7억원</dd></div><div><dt>월매출</dt><dd data-engine-key="revenue" data-engine-value="63000000">6,300만원</dd></div></dl>
+            <dl class="example-card-kpis"><div><dt>월 영업이익</dt><dd data-engine-key="monthlyProfit" data-engine-value="18499545.454545453">약 1,850만원</dd></div><div><dt>영업이익률</dt><dd data-engine-key="margin" data-engine-value="29.36435786435786">29.36%</dd></div><div><dt>ROI</dt><dd data-engine-key="roi" data-engine-value="31.713506493506493">31.71%</dd></div></dl>
+            <p class="example-card-support">운영비 <span data-engine-key="expense" data-engine-value="44500454.54545455">약 4,450만원</span> · 회수기간 <span data-engine-key="paybackYears" data-engine-value="3.153230628107161">약 3.15년</span></p>
+            <div class="example-card-actions"><a class="button secondary" href="/examples/35-room-lodging-example.html">35실 사례 자세히 보기</a><a href="https://staycalculators.com/">내 조건으로 계산하기</a></div>
+          </article>
+
+          <article class="example-card" id="example-30-monthly" data-card-scenario="monthly-30" tabindex="-1">
+            <header><div><p class="example-type">달방형 · 30실</p><h4><a href="/examples/30-room-monthly-stay-example.html">30실 달방형</a></h4><p>객실당 월매출 100만원 · 월세 2,000만원</p></div><span class="recommendation-badge" hidden>선택 조건과 가까운 사례</span></header>
+            <dl class="example-card-inputs"><div><dt>총 투자금</dt><dd>7억원</dd></div><div><dt>월매출</dt><dd data-engine-key="revenue" data-engine-value="30000000">3,000만원</dd></div></dl>
+            <dl class="example-card-kpis"><div><dt>월 영업이익</dt><dd data-engine-key="monthlyProfit" data-engine-value="3711000">약 371.1만원</dd></div><div><dt>영업이익률</dt><dd data-engine-key="margin" data-engine-value="12.370000000000001">12.37%</dd></div><div><dt>ROI</dt><dd data-engine-key="roi" data-engine-value="6.361714285714286">6.36%</dd></div></dl>
+            <p class="example-card-support">운영비 <span data-engine-key="expense" data-engine-value="26289000">약 2,628.9만원</span> · 회수기간 <span data-engine-key="paybackYears" data-engine-value="15.719033503997126">약 15.72년</span></p>
+            <div class="example-card-actions"><a class="button secondary" href="/examples/30-room-monthly-stay-example.html">달방형 사례 자세히 보기</a><a href="https://staycalculators.com/">내 조건으로 계산하기</a></div>
+          </article>
+
+          <article class="example-card" id="example-32-hybrid" data-card-scenario="hybrid-32" tabindex="-1">
+            <header><div><p class="example-type">혼합형 · 총 32실</p><h4><a href="/examples/32-room-hybrid-example.html">32실 혼합형</a></h4><p>숙박 20실 180만원 · 달방 12실 100만원</p></div><span class="recommendation-badge" hidden>선택 조건과 가까운 사례</span></header>
+            <dl class="example-card-inputs"><div><dt>월세 / 총 투자금</dt><dd>2,000만원 / 7억원</dd></div><div><dt>월매출</dt><dd data-engine-key="revenue" data-engine-value="48000000">4,800만원</dd></div></dl>
+            <dl class="example-card-kpis"><div><dt>월 영업이익</dt><dd data-engine-key="monthlyProfit" data-engine-value="12824285.714285716">약 1,282.4만원</dd></div><div><dt>영업이익률</dt><dd data-engine-key="margin" data-engine-value="26.71726190476191">26.72%</dd></div><div><dt>ROI</dt><dd data-engine-key="roi" data-engine-value="21.98448979591837">21.98%</dd></div></dl>
+            <p class="example-card-support">운영비 <span data-engine-key="expense" data-engine-value="35175714.28571428">약 3,517.6만원</span> · 회수기간 <span data-engine-key="paybackYears" data-engine-value="4.548661393932642">약 4.55년</span></p>
+            <div class="example-card-actions"><a class="button secondary" href="/examples/32-room-hybrid-example.html">혼합형 사례 자세히 보기</a><a href="https://staycalculators.com/">내 조건으로 계산하기</a></div>
+          </article>
+        </div>
+
+        <section class="example-comparison" aria-labelledby="example-comparison-title">
+          <h3 id="example-comparison-title">5개 사례 한눈에 비교</h3>
+          <p class="comparison-scroll-hint" id="comparison-scroll-hint">표는 좌우로 움직여 전체 항목을 확인할 수 있습니다.</p>
+          <div class="comparison-table-scroll" tabindex="0" role="region" aria-labelledby="example-comparison-title" aria-describedby="comparison-scroll-hint">
+            <table><caption>StayCalculators 가상 시나리오 5개 비교</caption><thead><tr><th scope="col">사례</th><th scope="col">운영형태</th><th scope="col">객실 수</th><th scope="col">객실당 월매출</th><th scope="col">월매출</th><th scope="col">운영비</th><th scope="col">월 영업이익</th><th scope="col">영업이익률</th><th scope="col">연 영업이익</th><th scope="col">ROI</th><th scope="col">회수기간</th></tr></thead><tbody>
+              <tr data-comparison-scenario="lodging-20"><th scope="row"><a href="/examples/20-room-lodging-example.html">20실 숙박형</a></th><td>숙박형</td><td>20실</td><td>180만원</td><td data-engine-key="revenue" data-engine-value="36000000">3,600만원</td><td data-engine-key="expense" data-engine-value="35353896.103896104">약 3,535.4만원</td><td data-engine-key="monthlyProfit" data-engine-value="646103.8961038962">약 64.6만원</td><td data-engine-key="margin" data-engine-value="1.7947330447330452">1.79%</td><td data-engine-key="annualProfit" data-engine-value="7753246.753246754">약 775.3만원</td><td data-engine-key="roi" data-engine-value="1.1076066790352506">1.11%</td><td data-engine-key="paybackYears" data-engine-value="90.28475711892796">약 90.28년</td></tr>
+              <tr data-comparison-scenario="lodging-30"><th scope="row"><a href="/examples/30-room-lodging-example.html">30실 숙박형</a></th><td>숙박형</td><td>30실</td><td>180만원</td><td data-engine-key="revenue" data-engine-value="54000000">5,400만원</td><td data-engine-key="expense" data-engine-value="41634935.06493506">약 4,163.5만원</td><td data-engine-key="monthlyProfit" data-engine-value="12365064.935064942">약 1,236.5만원</td><td data-engine-key="margin" data-engine-value="22.89826839826841">22.90%</td><td data-engine-key="annualProfit" data-engine-value="148380779.2207793">약 1억 4,838.1만원</td><td data-engine-key="roi" data-engine-value="21.19725417439704">21.20%</td><td data-engine-key="paybackYears" data-engine-value="4.717592154968086">약 4.72년</td></tr>
+              <tr data-comparison-scenario="lodging-35"><th scope="row"><a href="/examples/35-room-lodging-example.html">35실 숙박형</a></th><td>숙박형</td><td>35실</td><td>180만원</td><td data-engine-key="revenue" data-engine-value="63000000">6,300만원</td><td data-engine-key="expense" data-engine-value="44500454.54545455">약 4,450만원</td><td data-engine-key="monthlyProfit" data-engine-value="18499545.454545453">약 1,850만원</td><td data-engine-key="margin" data-engine-value="29.36435786435786">29.36%</td><td data-engine-key="annualProfit" data-engine-value="221994545.45454544">약 2억 2,199.5만원</td><td data-engine-key="roi" data-engine-value="31.713506493506493">31.71%</td><td data-engine-key="paybackYears" data-engine-value="3.153230628107161">약 3.15년</td></tr>
+              <tr data-comparison-scenario="monthly-30"><th scope="row"><a href="/examples/30-room-monthly-stay-example.html">30실 달방형</a></th><td>달방형</td><td>30실</td><td>100만원</td><td data-engine-key="revenue" data-engine-value="30000000">3,000만원</td><td data-engine-key="expense" data-engine-value="26289000">약 2,628.9만원</td><td data-engine-key="monthlyProfit" data-engine-value="3711000">약 371.1만원</td><td data-engine-key="margin" data-engine-value="12.370000000000001">12.37%</td><td data-engine-key="annualProfit" data-engine-value="44532000">4,453.2만원</td><td data-engine-key="roi" data-engine-value="6.361714285714286">6.36%</td><td data-engine-key="paybackYears" data-engine-value="15.719033503997126">약 15.72년</td></tr>
+              <tr data-comparison-scenario="hybrid-32"><th scope="row"><a href="/examples/32-room-hybrid-example.html">32실 혼합형</a></th><td>혼합형</td><td>숙박 20실<br>달방 12실</td><td>숙박 180만원<br>달방 100만원</td><td data-engine-key="revenue" data-engine-value="48000000">4,800만원</td><td data-engine-key="expense" data-engine-value="35175714.28571428">약 3,517.6만원</td><td data-engine-key="monthlyProfit" data-engine-value="12824285.714285716">약 1,282.4만원</td><td data-engine-key="margin" data-engine-value="26.71726190476191">26.72%</td><td data-engine-key="annualProfit" data-engine-value="153891428.5714286">약 1억 5,389.1만원</td><td data-engine-key="roi" data-engine-value="21.98448979591837">21.98%</td><td data-engine-key="paybackYears" data-engine-value="4.548661393932642">약 4.55년</td></tr>
+            </tbody></table>
+          </div>
+        </section>
+
+        <section class="example-insights" aria-labelledby="example-insights-title">
+          <h3 id="example-insights-title">이 5개 사례에서 확인할 수 있는 점</h3>
+          <h4>20실과 35실 숙박형의 고정비 분산 차이</h4>
+          <p>두 가상 시나리오는 객실당 월매출 180만원, 연면적 1,200㎡, 월세 2,000만원, 총 투자금 7억원이 같습니다. 20실은 월 영업이익 약 64.6만원·영업이익률 1.79%·ROI 1.11%·회수기간 약 90.28년이고, 35실은 월 영업이익 약 1,850만원·영업이익률 29.36%·ROI 31.71%·회수기간 약 3.15년입니다. 이 조건에서는 객실 수 차이가 같은 월세 등 고정비를 분산하는 결과에 크게 작용하지만, 객실 수가 많을수록 항상 수익성이 높다는 뜻은 아닙니다.</p>
+          <h4>30실 달방형은 비용 기준부터 다르다</h4>
+          <p>30실 달방형은 객실당 월매출을 100만원으로 두며 월 영업이익 약 371.1만원, 영업이익률 12.37%, ROI 6.36%, 회수기간 약 15.72년으로 계산됩니다. 숙박형과는 객실당 매출뿐 아니라 청소비 구조가 다르고, 세탁비·PMS/CMS·플랫폼 비용 0원은 장기 점유를 전제로 한 이 간편 분석 시나리오의 기본 가정입니다. 실제 서비스나 모집 채널을 이용하면 해당 비용이 발생할 수 있으므로 단순 우열로 해석하면 안 됩니다.</p>
+          <h4>객실 수와 영업이익은 같은 비율로 움직이지 않는다</h4>
+          <p>20실에서 35실로 객실 수는 75% 늘지만 영업이익은 단순히 75% 증가하지 않습니다. 이 엔진에서 월세·보험료·기장료는 같은 입력 또는 고정 참고값이고, 세탁·통신·어매니티는 객실 수와 연동되며, 플랫폼 비용은 숙박 매출과 연동됩니다. 청소비는 객실 구간과 운영형태별 공식이 달라 매출 증가율, 비용 증가율과 영업이익 증가율이 서로 달라질 수 있습니다.</p>
+        </section>
+
+        <div class="page-nav example-final-actions"><a class="button primary" href="https://staycalculators.com/">객실 수와 월세를 바꿔 직접 분석하기</a><a class="button secondary" href="#verification">결과 검증 방법 보기</a></div>
       </section>
 
       <h2>1. 간편 분석 입력 방법</h2>
@@ -85,5 +164,6 @@
   </main>
   <footer class="site-footer"><div class="container footer-grid"><strong data-site-name>숙박업 수익률 계산기</strong><nav><a href="/about">소개</a><a href="/privacy">개인정보처리방침</a><a href="/contact">문의</a></nav></div></footer>
   <script type="module" src="js/content.js"></script>
+  <script type="module" src="js/guide-examples.js"></script>
 </body>
 </html>
