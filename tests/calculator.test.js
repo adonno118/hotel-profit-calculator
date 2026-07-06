@@ -74,6 +74,23 @@ assert.equal(estimatePlatformCost(hybridSimple.lodgingRevenue, 0.1), 3600000, '�
 assert.equal(hybridSimple.details.cleaningLabor, 3500000);
 assert.equal(hybridSimple.details.payrollBurden, 350000, '혼합형 청소 인건비 × 10%');
 
+const hybrid32 = (lodgingRooms, monthlyRooms) => estimateSimple({ rooms: 32, lodgingRooms, monthlyRooms, area: 0, rent: 0, lodgingRevenuePerRoom: 1800000, monthlyStayRevenuePerRoom: 900000, operationType: 'hybrid' });
+const hybridTwentyLodging = hybrid32(20, 12);
+const hybridZeroLodging = hybrid32(0, 32);
+const hybridOneLodging = hybrid32(1, 31);
+const hybridAllLodging = hybrid32(32, 0);
+const lodgingThirtyTwo = estimateSimple({ rooms: 32, area: 0, rent: 0, lodgingRevenuePerRoom: 1800000, operationType: 'lodging' });
+
+assert.ok(Math.abs(hybridTwentyLodging.details.laundry - estimateLaundryCost(20)) < 0.001, '혼합형 세탁비는 숙박 20실 기준');
+assert.equal(hybridTwentyLodging.details.pmsCms, estimatePmsCmsCost(32), '혼합형에 숙박 객실이 있으면 PMS/CMS는 전체 32실 기준');
+assert.equal(hybridZeroLodging.details.laundry, 0, '혼합형 숙박 0실이면 세탁비 0');
+assert.equal(hybridZeroLodging.details.pmsCms, 0, '혼합형 숙박 0실이면 PMS/CMS 0');
+assert.ok(Math.abs(hybridOneLodging.details.laundry - estimateLaundryCost(1)) < 0.001, '혼합형 숙박 1실 세탁비 경계');
+assert.equal(hybridOneLodging.details.pmsCms, estimatePmsCmsCost(32), '혼합형 숙박 1실이면 PMS/CMS는 전체 32실 기준');
+assert.equal(hybridAllLodging.details.laundry, lodgingThirtyTwo.details.laundry, '혼합형 숙박 32실 세탁비는 숙박형과 동일');
+assert.equal(hybridAllLodging.details.pmsCms, lodgingThirtyTwo.details.pmsCms, '혼합형 숙박 32실 PMS/CMS는 숙박형과 동일');
+assert.ok(Math.abs(estimateLaundryCost(32) - hybridTwentyLodging.details.laundry - estimateLaundryCost(12)) < 0.001, '32실 중 달방 12실 세탁비 제외 차이');
+
 const monthlyOnly = estimateSimple({ rooms: 30, lodgingRevenuePerRoom: 1800000, monthlyStayRevenuePerRoom: 900000, operationType: 'monthly' });
 assert.equal(monthlyOnly.monthlyStayRevenue, 27000000, '하이브리드 테스트 C: 달방 전용 매출');
 assert.equal(monthlyOnly.lodgingRevenue, 0);

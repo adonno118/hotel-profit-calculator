@@ -86,12 +86,12 @@ export function estimateSimple(input) {
     water: area * C.utilities.waterPerSqm,
     gas: area * C.utilities.gasPerSqm,
     platform: estimatePlatformCost(lodgingRevenue),
-    pmsCms: mode === 'monthly' ? 0 : estimatePmsCmsCost(rooms),
+    pmsCms: mode === 'monthly' || (mode === 'hybrid' && lodgingRooms === 0) ? 0 : estimatePmsCmsCost(rooms),
     communications: estimateCommunicationCost(rooms),
     insurance: C.fixed.insurance,
     accounting: C.fixed.accounting,
     amenities: estimateAmenityCost(rooms),
-    laundry: mode === 'monthly' ? 0 : estimateLaundryCost(rooms)
+    laundry: mode === 'monthly' ? 0 : estimateLaundryCost(mode === 'hybrid' ? lodgingRooms : rooms)
   };
   const expense = sum(Object.values(details));
   const fixed = details.rent + details.cleaningLabor + details.payrollBurden + details.pmsCms + details.communications + details.insurance + details.accounting;

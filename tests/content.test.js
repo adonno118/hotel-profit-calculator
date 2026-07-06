@@ -90,10 +90,16 @@ assert.match(platformGuide, /총 5,000만원이 아니라 숙박 매출 3,000만
 assert.match(hybridGuide, /총 월매출 = 숙박 매출 \+ 달방 매출/);
 assert.match(hybridGuide, /플랫폼·결제 비용 = 숙박 매출 × 설정 비율/);
 assert.match(hybridGuide, /floor\(숙박 배정 객실 수 ÷ 15\) × 350만원/);
-assert.match(hybridGuide, /세탁비는 숙박 객실 수가 아니라.*전체 객실 수/s);
-assert.match(hybridGuide, /PMS\/CMS 역시 혼합형에서는 전체 객실 수/);
+assert.match(hybridGuide, /혼합형 외주 린넨·세탁비는.*숙박 객실 수/s);
+assert.match(hybridGuide, /PMS\/CMS는 숙박 객실이 1실 이상.*전체 객실 수/s);
+assert.match(hybridGuide, /숙박 객실이 0실이면 0원/);
+assert.match(laundryGuide, /혼합형은.*숙박 배정 객실 수/s);
 assert.equal(sample.details.cleaningLabor, 3500000, '혼합형 20실 숙박 배정 청소비');
-assert.ok(Math.abs(sample.details.laundry - 30 * (4000000 / 35)) < 0.001, '혼합형 세탁비는 전체 객실 수 기준');
+assert.ok(Math.abs(sample.details.laundry - 20 * (4000000 / 35)) < 0.001, '혼합형 세탁비는 숙박 객실 수 기준');
+assert.ok(sample.details.pmsCms > 0, '혼합형에 숙박 객실이 있으면 PMS/CMS 적용');
+const zeroLodgingHybrid = estimateSimple({ rooms: 30, lodgingRooms: 0, monthlyRooms: 30, operationType: 'hybrid' });
+assert.equal(zeroLodgingHybrid.details.laundry, 0, '혼합형 숙박 0실 세탁비 0');
+assert.equal(zeroLodgingHybrid.details.pmsCms, 0, '혼합형 숙박 0실 PMS/CMS 0');
 
 const roiExample = metrics({ revenue: 7000000, expense: 0, investment: 800000000, rooms: 1 });
 assert.equal(roiExample.annualProfit, 84000000);
