@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>모텔 청소 인건비 추정 | 객실 수에 따른 간편 계산 기준</title>
+  <meta name="description" content="객실 수에 따라 숙박형, 달방형과 혼합형 모텔 청소 인건비를 추정하는 StayCalculators 간편 분석 기준과 적용 예시입니다.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <meta property="og:type" content="article">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:site_name" content="숙박업 수익률 계산기">
+  <meta property="og:title" content="모텔 객실 수에 따른 청소 인건비는 어떻게 추정할까?">
+  <meta property="og:description" content="숙박형·달방형·혼합형 객실 수에 적용되는 간편 분석용 청소비 기준">
+  <meta property="og:url" content="https://staycalculators.com/guide/motel-labor-cost.html">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="모텔 청소 인건비 추정 기준">
+  <meta name="twitter:description" content="객실 수와 운영방식에 따른 간편 청소비 계산 기준">
+  <link rel="canonical" href="https://staycalculators.com/guide/motel-labor-cost.html">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/content.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://staycalculators.com/guide/motel-labor-cost.html#webpage","url":"https://staycalculators.com/guide/motel-labor-cost.html","name":"모텔 청소 인건비 추정 | 객실 수에 따른 간편 계산 기준","description":"객실 수에 따라 숙박형, 달방형과 혼합형 모텔 청소 인건비를 추정하는 StayCalculators 간편 분석 기준과 적용 예시입니다.","inLanguage":"ko-KR","isPartOf":{"@id":"https://staycalculators.com/#website"},"breadcrumb":{"@id":"https://staycalculators.com/guide/motel-labor-cost.html#breadcrumb"}},{"@type":"BreadcrumbList","@id":"https://staycalculators.com/guide/motel-labor-cost.html#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"홈","item":"https://staycalculators.com/"},{"@type":"ListItem","position":2,"name":"숙박업 수익성 가이드","item":"https://staycalculators.com/guide"},{"@type":"ListItem","position":3,"name":"모텔 청소 인건비 추정","item":"https://staycalculators.com/guide/motel-labor-cost.html"}]}]}</script>
+</head>
+<body>
+  <a class="skip-link" href="#main">본문 바로가기</a>
+  <header class="site-header"><div class="container header-inner"><a class="brand" href="/">숙박업 수익률 계산기</a><nav aria-label="주요 메뉴"><a href="/">계산기</a><a href="/guide">수익성 가이드</a><a href="/about">소개</a></nav></div></header>
+  <main id="main">
+    <section class="content-hero"><div class="container prose">
+      <nav class="breadcrumb" aria-label="현재 위치"><ol><li><a href="/">홈</a></li><li><a href="/guide">숙박업 수익성 가이드</a></li><li aria-current="page">모텔 청소 인건비 추정</li></ol></nav>
+      <p class="eyebrow">운영비 추정</p>
+      <h1>모텔 객실 수에 따른 청소 인건비는 어떻게 추정할까?</h1>
+      <p class="lead direct-answer">StayCalculators의 숙박형 간편 분석은 15객실마다 상근 청소인력 1명분인 월 350만원을 반영하고, 남은 객실은 5실 단위마다 월 100만원의 파트타임 참고값을 더합니다. 이는 매물을 빠르게 비교하기 위한 추정 모델이며 실제 채용 시세나 모든 모텔의 적정 인력을 뜻하지 않습니다.</p>
+    </div></section>
+    <article class="container content-page prose">
+      <h2>숙박형 청소 인건비 계산 기준</h2>
+      <div class="formula-box"><strong>상근 인력비 = floor(전체 객실 수 ÷ 15) × 350만원</strong><p>15실을 완성할 때마다 상근 청소인력 1명분의 참고값을 반영합니다.</p></div>
+      <div class="formula-box"><strong>잔여 객실 인력비 = ceil(15로 나눈 나머지 객실 수 ÷ 5) × 100만원</strong><p>남은 객실이 1실이라도 있으면 5실 블록 1개로 올림 처리합니다. 객실 수가 정확히 15의 배수이면 잔여 비용은 없습니다.</p></div>
+
+      <h2>객실 수별 적용 예시</h2>
+      <p>아래 금액은 현재 JavaScript 계산 엔진의 숙박형 기본 모델을 그대로 표로 옮긴 값입니다. 업계 평균, 법정 인건비 또는 실제 채용 견적이 아닙니다.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th scope="col">전체 객실 수</th><th scope="col">간편 분석 청소 인건비</th><th scope="col">계산 구성</th></tr></thead>
+        <tbody>
+          <tr><td>1~5실</td><td>월 100만원</td><td>잔여 1블록</td></tr>
+          <tr><td>6~10실</td><td>월 200만원</td><td>잔여 2블록</td></tr>
+          <tr><td>11~14실</td><td>월 300만원</td><td>잔여 3블록</td></tr>
+          <tr><td>15실</td><td>월 350만원</td><td>상근 1명분</td></tr>
+          <tr><td>16~20실</td><td>월 450만원</td><td>상근 1명분 + 잔여 1블록</td></tr>
+          <tr><td>21~25실</td><td>월 550만원</td><td>상근 1명분 + 잔여 2블록</td></tr>
+          <tr><td>26~29실</td><td>월 650만원</td><td>상근 1명분 + 잔여 3블록</td></tr>
+          <tr><td>30실</td><td>월 700만원</td><td>상근 2명분</td></tr>
+        </tbody>
+      </table></div>
+
+      <h2>달방형 청소비 기본 모델</h2>
+      <div class="formula-box"><strong>달방형 청소 인건비 = ceil(전체 객실 수 ÷ 20) × 50만원</strong><p>객실이 1실 이상이면 20실 블록마다 월 50만원을 반영합니다. 장기 투숙으로 객실 회전이 낮을 수 있다는 단순 가정이며, 실제 정기청소·퇴실청소 정책에 따라 비용은 달라집니다.</p></div>
+
+      <h2>혼합형 청소비 기본 모델</h2>
+      <div class="formula-box"><strong>혼합형 청소 인건비 = floor(숙박 배정 객실 수 ÷ 15) × 350만원</strong><p>전체 객실이 아니라 숙박에 배정한 객실만 기준으로 삼고, 완성된 15실 단위만 반영합니다. 따라서 숙박 배정 객실이 15실 미만이면 기본 추정값은 0원입니다.</p></div>
+      <p>이 0원은 실제 청소 업무가 없다는 의미가 아닙니다. 현재 모델은 15실 미만 잔여 숙박 객실을 기존 인력이 공용부 관리와 퇴실청소와 함께 처리할 수 있다는 단순 가정을 사용합니다. 별도 인력이나 외주 청소가 필요하면 상세 분석에서 직접 추가해야 합니다.</p>
+
+      <h2>사업주 부담 추정치는 별도로 더해집니다</h2>
+      <p>간편 분석은 위 청소 인건비에 사업주 부담 참고값을 별도로 합산합니다. 현재 설정은 숙박형과 혼합형 10%, 달방형 0.9%입니다. 이는 정확한 법정 보험료나 모든 고용 형태에 적용되는 비율이 아니며, 근로시간·계약 형태·가입 요건에 따라 실제 금액이 달라질 수 있습니다.</p>
+
+      <h2>실제 청소비를 바꾸는 변수</h2>
+      <ul>
+        <li>숙박률과 객실 회전율</li>
+        <li>대실 비중과 하루 청소 횟수</li>
+        <li>객실·욕실·공용부의 청소 범위</li>
+        <li>근무시간, 야간 업무와 휴무 운영</li>
+        <li>지역별 임금과 적용되는 최저임금</li>
+        <li>숙식 제공과 기타 근로조건</li>
+        <li>직접 고용 또는 외주 여부</li>
+        <li>가족 운영자가 직접 청소에 참여하는지 여부</li>
+      </ul>
+      <div class="article-note"><strong>실제 검토 방법</strong><p>객실 수만으로 인력을 확정하지 말고 최근 객실 판매 건수, 대실·숙박 비중, 청소 소요시간과 근무표를 확인하세요. 확보한 급여 또는 외주 견적은 상세 분석에서 기본 추정값 대신 입력할 수 있습니다.</p></div>
+
+      <div class="page-nav"><a class="button primary" href="https://staycalculators.com/">객실 수와 월매출로 직접 계산하기</a><a class="button secondary" href="/guide">가이드 허브로 돌아가기</a></div>
+      <section class="related-guides" aria-labelledby="related-title"><h2 id="related-title">관련 가이드</h2><ul><li><a href="/guide/motel-break-even-point.html">청소비를 포함한 모텔 손익분기점 검토</a></li><li><a href="/guide/hotel-profit-calculation.html">숙박업 수익률 계산법</a></li></ul></section>
+    </article>
+  </main>
+  <footer class="site-footer"><div class="container footer-grid"><strong>숙박업 수익률 계산기</strong><nav aria-label="하단 메뉴"><a href="/">계산기</a><a href="/guide">수익성 가이드</a><a href="/privacy">개인정보처리방침</a></nav></div></footer>
+</body>
+</html>

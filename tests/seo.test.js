@@ -7,17 +7,25 @@ import { SITE_CONFIG } from '../public/js/config/site-config.js';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', 'public');
 const siteUrl = 'https://staycalculators.com';
 const placeholderUrlPattern = /(?:ex(?:ample|maple)\.com|your[-_.]?(?:domain|site|url))/i;
-const pages = ['index.html', 'about.html', 'guide.html', 'privacy.html', 'disclaimer.html', 'contact.html'];
-const expectedUrls = new Map(pages.map((page) => [
-  page,
-  page === 'index.html' ? `${siteUrl}/` : `${siteUrl}/${page.replace(/\.html$/, '')}`
-]));
+const corePages = ['index.html', 'about.html', 'guide.html', 'privacy.html', 'disclaimer.html', 'contact.html'];
+const guidePages = [
+  'guide/hotel-profit-calculation.html',
+  'guide/motel-break-even-point.html',
+  'guide/motel-labor-cost.html'
+];
+const pages = [...corePages, ...guidePages];
+const expectedUrls = new Map([
+  ['index.html', `${siteUrl}/`],
+  ...corePages.slice(1).map((page) => [page, `${siteUrl}/${page.replace(/\.html$/, '')}`]),
+  ...guidePages.map((page) => [page, `${siteUrl}/${page}`])
+]);
 const canonicalUrls = [];
 const titles = new Set();
 const descriptions = new Set();
 
 assert.equal(SITE_CONFIG.siteUrl, siteUrl, '중앙 사이트 URL 설정 불일치');
-for (const url of expectedUrls.values()) {
+for (const page of corePages) {
+  const url = expectedUrls.get(page);
   const route = new URL(url).pathname;
   assert.ok(SITE_CONFIG.pages[route], `중앙 페이지 설정 누락: ${route}`);
 }
@@ -39,6 +47,7 @@ for (const page of pages) {
   assert.equal((html.match(/<body[\s>]/gi) || []).length, 1, `${page}: body 시작 태그 불일치`);
   assert.equal((html.match(/<\/body>/gi) || []).length, 1, `${page}: body 종료 태그 불일치`);
   assert.doesNotMatch(html, placeholderUrlPattern, `${page}: placeholder URL 존재`);
+  assert.doesNotMatch(html, /workers\.dev/i, `${page}: workers.dev URL 잔존`);
 
   const canonical = html.match(/<link\s+rel="canonical"\s+href="([^"]+)"/i)?.[1];
   const ogUrl = html.match(/<meta\s+property="og:url"\s+content="([^"]+)"/i)?.[1];
@@ -61,6 +70,20 @@ for (const page of pages) {
     `${page}: WebPage structured data URL 불일치`
   );
 
+  if (guidePages.includes(page)) {
+    const breadcrumb = structuredNodes.find((item) => item['@type'] === 'BreadcrumbList');
+    assert.ok(breadcrumb, `${page}: BreadcrumbList 누락`);
+    assert.deepEqual(
+      breadcrumb.itemListElement.map((item) => item.position),
+      [1, 2, 3],
+      `${page}: Breadcrumb 순서 불일치`
+    );
+    assert.equal(breadcrumb.itemListElement[0].item, `${siteUrl}/`, `${page}: 홈 Breadcrumb URL 불일치`);
+    assert.equal(breadcrumb.itemListElement[1].item, `${siteUrl}/guide`, `${page}: 가이드 Breadcrumb URL 불일치`);
+    assert.equal(breadcrumb.itemListElement[2].item, expectedUrls.get(page), `${page}: 현재 페이지 Breadcrumb URL 불일치`);
+    assert.match(html, /<nav\s+class="breadcrumb"\s+aria-label="현재 위치">/i, `${page}: 보이는 Breadcrumb 누락`);
+  }
+
   for (const match of html.matchAll(/(?:href|src)="([^"]+)"/g)) {
     const reference = match[1].split(/[?#]/)[0];
     if (!reference || /^(?:https?:|mailto:|tel:|data:|#)/i.test(reference)) continue;
@@ -69,7 +92,8 @@ for (const page of pages) {
       : reference.startsWith('/') && !reference.split('/').at(-1).includes('.')
         ? `${reference.slice(1)}.html`
         : reference.replace(/^\//, '');
-    await access(join(root, publicPath));
+    const filePath = reference.startsWith('/') ? join(root, publicPath) : join(dirname(join(root, page)), publicPath);
+    await access(filePath);
   }
 }
 
@@ -77,6 +101,9 @@ const sitemap = await readFile(join(root, 'sitemap.xml'), 'utf8');
 for (const url of canonicalUrls) assert.ok(sitemap.includes(`<loc>${url}</loc>`), `사이트맵 누락: ${url}`);
 assert.equal((sitemap.match(/<url>/g) || []).length, pages.length, '사이트맵 URL 수 불일치');
 assert.doesNotMatch(sitemap, placeholderUrlPattern, '사이트맵 placeholder URL 존재');
+assert.doesNotMatch(sitemap, /workers\.dev/i, '사이트맵 workers.dev URL 잔존');
+const sitemapLocations = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
+assert.equal(new Set(sitemapLocations).size, sitemapLocations.length, '사이트맵 중복 URL 존재');
 
 const robots = await readFile(join(root, 'robots.txt'), 'utf8');
 assert.match(robots, /User-agent:\s*\*/i);
@@ -88,6 +115,10 @@ assert.equal(adsText.trim(), 'google.com, pub-6886067012627803, DIRECT, f08c47fe
 assert.equal(adsText.trim().split(/\r?\n/).length, 1, 'ads.txt는 정확히 한 줄이어야 함');
 
 const index = await readFile(join(root, 'index.html'), 'utf8');
+for (const formula of ['월 영업이익', '예상 월매출 − 예상 월 운영비', '영업이익률', '연간 예상 영업이익', '투자금 대비 연 수익률', '예상 회수기간']) {
+  assert.ok(index.includes(formula), `메인 계산 기준 공식 누락: ${formula}`);
+}
+assert.match(index, /달방형 외주 린넨·세탁비를 0원으로 두는 기본 가정/, '달방형 세탁비 기본 가정 설명 누락');
 assert.equal((index.match(/name="google-site-verification"/g) || []).length, 1, 'Google 검증 태그 누락 또는 중복');
 assert.match(index, /<meta\s+name="google-site-verification"\s+content="Kmrve7O_QZcYI0ll4uTlnEJ3qaSIGvetpIIT8S5uNqc"\s*\/?>/i, 'Google 검증 토큰 불일치');
 assert.equal((index.match(/name="google-adsense-account"/g) || []).length, 1, 'Google AdSense 계정 태그 누락 또는 중복');

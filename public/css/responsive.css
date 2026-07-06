@@ -3,3 +3,4 @@
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 @media(max-width:620px){.result-box{min-height:104px;padding:14px}.result-value-sub{white-space:normal}.result-status{width:100%;justify-content:center;text-align:center}.metric{align-items:flex-start}.metric strong{max-width:58%}}
 @media(max-width:420px){.simple-share-actions{grid-template-columns:1fr}}
+@media(max-width:620px){.calculation-basis{padding:44px 0}.basis-grid{grid-template-columns:1fr}.basis-block{padding:18px}.basis-links{display:grid}}
