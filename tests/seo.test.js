@@ -10,11 +10,14 @@ const placeholderUrlPattern = /(?:ex(?:ample|maple)\.com|your[-_.]?(?:domain|sit
 const corePages = ['index.html', 'about.html', 'guide.html', 'privacy.html', 'disclaimer.html', 'contact.html'];
 const guidePages = [
   'guide/hotel-profit-calculation.html',
+  'guide/hybrid-operation-profit.html',
   'guide/lodging-platform-fee.html',
   'guide/motel-break-even-point.html',
   'guide/motel-labor-cost.html',
   'guide/motel-laundry-cost.html',
+  'guide/motel-rent-affordability.html',
   'guide/motel-revenue-per-room.html',
+  'guide/motel-roi-payback.html',
   'guide/monthly-stay-profit.html'
 ];
 const pages = [...corePages, ...guidePages];
