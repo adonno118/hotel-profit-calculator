@@ -20,11 +20,16 @@ const guidePages = [
   'guide/motel-roi-payback.html',
   'guide/monthly-stay-profit.html'
 ];
-const pages = [...corePages, ...guidePages];
+const examplePages = [
+  'examples/30-room-lodging-example.html',
+  'examples/32-room-hybrid-example.html'
+];
+const contentPages = [...guidePages, ...examplePages];
+const pages = [...corePages, ...contentPages];
 const expectedUrls = new Map([
   ['index.html', `${siteUrl}/`],
   ...corePages.slice(1).map((page) => [page, `${siteUrl}/${page.replace(/\.html$/, '')}`]),
-  ...guidePages.map((page) => [page, `${siteUrl}/${page}`])
+  ...contentPages.map((page) => [page, `${siteUrl}/${page}`])
 ]);
 const canonicalUrls = [];
 const titles = new Set();
@@ -77,7 +82,7 @@ for (const page of pages) {
     `${page}: WebPage structured data URL 불일치`
   );
 
-  if (guidePages.includes(page)) {
+  if (contentPages.includes(page)) {
     const breadcrumb = structuredNodes.find((item) => item['@type'] === 'BreadcrumbList');
     assert.ok(breadcrumb, `${page}: BreadcrumbList 누락`);
     assert.deepEqual(

@@ -91,6 +91,44 @@ assert.equal(hybridAllLodging.details.laundry, lodgingThirtyTwo.details.laundry,
 assert.equal(hybridAllLodging.details.pmsCms, lodgingThirtyTwo.details.pmsCms, '혼합형 숙박 32실 PMS/CMS는 숙박형과 동일');
 assert.ok(Math.abs(estimateLaundryCost(32) - hybridTwentyLodging.details.laundry - estimateLaundryCost(12)) < 0.001, '32실 중 달방 12실 세탁비 제외 차이');
 
+const exampleInvestment = 700000000;
+const lodgingExampleInput = { operationType: 'lodging', rooms: 30, area: 1200, lodgingRevenuePerRoom: 1800000, monthlyStayRevenuePerRoom: 0, lodgingRooms: 0, monthlyRooms: 0, deposit: 200000000, premium: 400000000, rent: 20000000 };
+const hybridExampleInput = { operationType: 'hybrid', rooms: 32, area: 1200, lodgingRooms: 20, monthlyRooms: 12, lodgingRevenuePerRoom: 1800000, monthlyStayRevenuePerRoom: 1000000, deposit: 200000000, premium: 400000000, rent: 20000000 };
+const exampleResult = (input) => {
+  const simpleResult = estimateSimple(input);
+  return metrics({ revenue: simpleResult.revenue, expense: simpleResult.expense, fixed: simpleResult.fixed, variable: simpleResult.variable, investment: exampleInvestment, rooms: input.rooms, details: simpleResult.details, lodgingRevenue: simpleResult.lodgingRevenue, monthlyStayRevenue: simpleResult.monthlyStayRevenue });
+};
+const lodgingExample = exampleResult(lodgingExampleInput);
+const hybridExample = exampleResult(hybridExampleInput);
+
+assert.equal(lodgingExample.revenue, 54000000, '30실 사례 월매출');
+assert.ok(Math.abs(lodgingExample.expense - 41634935.06493506) < 0.001, '30실 사례 월 운영비');
+assert.ok(Math.abs(lodgingExample.monthlyProfit - 12365064.935064942) < 0.001, '30실 사례 월 영업이익');
+assert.ok(Math.abs(lodgingExample.margin - 22.89826839826841) < 0.000001, '30실 사례 영업이익률');
+assert.ok(Math.abs(lodgingExample.annualProfit - 148380779.2207793) < 0.001, '30실 사례 연 영업이익');
+assert.equal(lodgingExample.investment, exampleInvestment, '30실 사례 총 투자금');
+assert.ok(Math.abs(lodgingExample.roi - 21.19725417439704) < 0.000001, '30실 사례 ROI');
+assert.ok(Math.abs(lodgingExample.paybackYears - 4.717592154968086) < 0.000001, '30실 사례 회수기간');
+assert.equal(lodgingExample.details.cleaningLabor, 7000000, '30실 사례 청소비');
+assert.equal(lodgingExample.details.platform, 4860000, '30실 사례 플랫폼 비용');
+assert.ok(Math.abs(lodgingExample.details.laundry - 3428571.4285714286) < 0.001, '30실 사례 세탁비');
+assert.ok(Math.abs(lodgingExample.details.pmsCms - 366363.63636363635) < 0.001, '30실 사례 PMS/CMS');
+
+assert.equal(hybridExample.lodgingRevenue, 36000000, '32실 혼합 사례 숙박 매출');
+assert.equal(hybridExample.monthlyStayRevenue, 12000000, '32실 혼합 사례 달방 매출');
+assert.equal(hybridExample.revenue, 48000000, '32실 혼합 사례 총매출');
+assert.ok(Math.abs(hybridExample.expense - 35175714.28571428) < 0.001, '32실 혼합 사례 월 운영비');
+assert.ok(Math.abs(hybridExample.monthlyProfit - 12824285.714285716) < 0.001, '32실 혼합 사례 월 영업이익');
+assert.ok(Math.abs(hybridExample.margin - 26.71726190476191) < 0.000001, '32실 혼합 사례 영업이익률');
+assert.ok(Math.abs(hybridExample.annualProfit - 153891428.5714286) < 0.001, '32실 혼합 사례 연 영업이익');
+assert.equal(hybridExample.investment, exampleInvestment, '32실 혼합 사례 총 투자금');
+assert.ok(Math.abs(hybridExample.roi - 21.98448979591837) < 0.000001, '32실 혼합 사례 ROI');
+assert.ok(Math.abs(hybridExample.paybackYears - 4.548661393932642) < 0.000001, '32실 혼합 사례 회수기간');
+assert.equal(hybridExample.details.platform, 3240000, '32실 혼합 사례 플랫폼 비용은 숙박 매출 기준');
+assert.ok(Math.abs(hybridExample.details.laundry - 2285714.285714286) < 0.001, '32실 혼합 사례 세탁비는 숙박 20실 기준');
+assert.equal(hybridExample.details.pmsCms, 390000, '32실 혼합 사례 PMS/CMS는 전체 32실 기준');
+assert.equal(hybridExample.details.cleaningLabor, 3500000, '32실 혼합 사례 청소비는 숙박 20실 기준');
+
 const monthlyOnly = estimateSimple({ rooms: 30, lodgingRevenuePerRoom: 1800000, monthlyStayRevenuePerRoom: 900000, operationType: 'monthly' });
 assert.equal(monthlyOnly.monthlyStayRevenue, 27000000, '하이브리드 테스트 C: 달방 전용 매출');
 assert.equal(monthlyOnly.lodgingRevenue, 0);

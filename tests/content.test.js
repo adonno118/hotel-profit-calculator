@@ -22,6 +22,8 @@ const monthlyStayGuide = await readFile(join(publicRoot, 'guide', 'monthly-stay-
 const hybridGuide = await readFile(join(publicRoot, 'guide', 'hybrid-operation-profit.html'), 'utf8');
 const roiGuide = await readFile(join(publicRoot, 'guide', 'motel-roi-payback.html'), 'utf8');
 const rentGuide = await readFile(join(publicRoot, 'guide', 'motel-rent-affordability.html'), 'utf8');
+const lodgingExampleHtml = await readFile(join(publicRoot, 'examples', '30-room-lodging-example.html'), 'utf8');
+const hybridExampleHtml = await readFile(join(publicRoot, 'examples', '32-room-hybrid-example.html'), 'utf8');
 
 const guideFiles = (await readdir(join(publicRoot, 'guide'))).filter((file) => file.endsWith('.html')).sort();
 assert.deepEqual(guideFiles, [
@@ -36,6 +38,8 @@ assert.deepEqual(guideFiles, [
   'motel-revenue-per-room.html',
   'motel-roi-payback.html'
 ], '가이드 파일은 기존 7개와 3차 신규 3개여야 함');
+const exampleFiles = (await readdir(join(publicRoot, 'examples'))).filter((file) => file.endsWith('.html')).sort();
+assert.deepEqual(exampleFiles, ['30-room-lodging-example.html', '32-room-hybrid-example.html'], '대표 사례 페이지는 정확히 2개여야 함');
 
 const sample = estimateSimple({
   rooms: 30,
@@ -110,6 +114,31 @@ assert.match(roiGuide, /예상 회수기간 = 총 투자금 ÷ 연간 예상 영
 assert.match(roiGuide, /총 투자금이 0원.*모두 계산 불가/s);
 assert.match(roiGuide, /연간 예상 영업이익이 음수.*ROI는 음수.*회수기간은 산정 불가/s);
 assert.doesNotMatch(roiGuide, /좋은 ROI 기준|적정 회수기간은|업계 평균 수익률/);
+
+const scenarioResult = (input) => {
+  const simpleResult = estimateSimple(input);
+  return metrics({ revenue: simpleResult.revenue, expense: simpleResult.expense, fixed: simpleResult.fixed, variable: simpleResult.variable, investment: 700000000, rooms: input.rooms, details: simpleResult.details, lodgingRevenue: simpleResult.lodgingRevenue, monthlyStayRevenue: simpleResult.monthlyStayRevenue });
+};
+const lodgingScenario = scenarioResult({ operationType: 'lodging', rooms: 30, area: 1200, lodgingRevenuePerRoom: 1800000, deposit: 200000000, premium: 400000000, rent: 20000000 });
+const hybridScenario = scenarioResult({ operationType: 'hybrid', rooms: 32, area: 1200, lodgingRooms: 20, monthlyRooms: 12, lodgingRevenuePerRoom: 1800000, monthlyStayRevenuePerRoom: 1000000, deposit: 200000000, premium: 400000000, rent: 20000000 });
+const htmlEngineValue = (html, key) => Number(html.match(new RegExp(`data-engine-key="${key.replace('.', '\\.')}" data-engine-value="([^"]+)"`))?.[1]);
+const assertHtmlValues = (html, result, keys) => {
+  for (const key of keys) {
+    const expected = key.startsWith('details.') ? result.details[key.slice(8)] : result[key];
+    assert.ok(Math.abs(htmlEngineValue(html, key) - expected) < 0.001, `사례 HTML 엔진 값 불일치: ${key}`);
+  }
+};
+const coreScenarioKeys = ['revenue', 'expense', 'monthlyProfit', 'margin', 'annualProfit', 'investment', 'roi', 'paybackYears', 'details.rent', 'details.cleaningLabor', 'details.payrollBurden', 'details.electricity', 'details.water', 'details.gas', 'details.platform', 'details.laundry', 'details.pmsCms', 'details.communications', 'details.amenities', 'details.insurance', 'details.accounting'];
+assertHtmlValues(lodgingExampleHtml, lodgingScenario, coreScenarioKeys);
+assertHtmlValues(hybridExampleHtml, hybridScenario, ['lodgingRevenue', 'monthlyStayRevenue', ...coreScenarioKeys]);
+assert.match(lodgingExampleHtml, /계산 구조를 설명하기 위한 가상 시나리오/);
+assert.match(hybridExampleHtml, /계산 구조를 설명하기 위한 가상 시나리오/);
+assert.match(hybridExampleHtml, /숙박 매출 3,600만원 × 9%/);
+assert.match(hybridExampleHtml, /숙박 20실 × \(400만원÷35실\)/);
+assert.match(hybridExampleHtml, /숙박 객실 존재: 전체 32실 기준/);
+for (const html of [lodgingExampleHtml, hybridExampleHtml]) {
+  assert.doesNotMatch(html, /실제 사례|실거래 사례|추천 매물|수익을 보장/);
+}
 
 assert.match(rentGuide, /월매출이 월세를 넘는지만으로 수익성을 판단할 수 없습니다/);
 assert.match(rentGuide, /월 영업이익 = 예상 월매출 − 전체 예상 월 운영비/);
