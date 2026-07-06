@@ -21,8 +21,11 @@ const guidePages = [
   'guide/monthly-stay-profit.html'
 ];
 const examplePages = [
+  'examples/20-room-lodging-example.html',
   'examples/30-room-lodging-example.html',
-  'examples/32-room-hybrid-example.html'
+  'examples/30-room-monthly-stay-example.html',
+  'examples/32-room-hybrid-example.html',
+  'examples/35-room-lodging-example.html'
 ];
 const contentPages = [...guidePages, ...examplePages];
 const pages = [...corePages, ...contentPages];
