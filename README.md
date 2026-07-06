@@ -21,7 +21,7 @@ node tests/storage.test.js
 
 배포 대상은 `public/` 디렉터리뿐입니다. `wrangler.jsonc`의 `assets.directory`가 `./public`을 가리키므로 `node_modules`, 테스트와 개발 설정 파일은 업로드되지 않습니다. Wrangler가 설치된 환경에서 `npm run deploy` 또는 `wrangler deploy`를 실행합니다. 별도의 빌드 명령, 환경 변수나 서버 함수는 필요하지 않습니다.
 
-공개 URL은 `https://hotel-profit-calculator.cobus836.workers.dev`이며 `public/js/config/site-config.js`, `public/robots.txt`, `public/sitemap.xml`에서 동일하게 관리합니다.
+공개 URL은 `https://staycalculators.com`이며 `public/js/config/site-config.js`, `public/robots.txt`, `public/sitemap.xml`에서 동일하게 관리합니다.
 
 ## 검색 등록 및 AdSense 준비
 

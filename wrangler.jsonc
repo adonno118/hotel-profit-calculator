@@ -1,6 +1,12 @@
 {
   "name": "hotel-profit-calculator",
   "compatibility_date": "2026-07-05",
+  "routes": [
+    {
+      "pattern": "staycalculators.com",
+      "custom_domain": true
+    }
+  ],
   "assets": {
     "directory": "./public"
   }

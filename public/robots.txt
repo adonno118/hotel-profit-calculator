@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://hotel-profit-calculator.cobus836.workers.dev/sitemap.xml
+Sitemap: https://staycalculators.com/sitemap.xml
