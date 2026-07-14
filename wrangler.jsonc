@@ -8,6 +8,7 @@
     }
   ],
   "assets": {
-    "directory": "./public"
+    "directory": "./public",
+    "html_handling": "auto-trailing-slash"
   }
 }

@@ -168,12 +168,12 @@ assert.match(operatingCostGuide, /달방형.*기본 0원/s);
 assert.match(operatingCostGuide, /혼합형.*숙박 객실 수 기준/s);
 assert.match(operatingCostGuide, /숙박 객실이 1실 이상이면 전체 객실 수 기준/);
 for (const step of ['운영방식과 객실 구성', '객실당 예상 월매출', '총 월매출과 전체 운영비', '월 영업이익과 영업이익률', '총 투자금', 'ROI와 회수기간', '민감한 입력값']) assert.ok(investmentChecklistGuide.includes(step), `매물 검토 순서 누락: ${step}`);
-assert.match(investmentChecklistGuide, /\/guide\.html#profitability-examples-title/);
-assert.match(operatingCostGuide, /\/guide\.html#profitability-examples-title/);
-assert.match(guideHub, /\/guide\/motel-operating-cost\.html/);
-assert.match(guideHub, /\/guide\/lodging-investment-checklist\.html/);
-assert.match(breakEvenGuide, /\/guide\/motel-operating-cost\.html/);
-assert.match(rentGuide, /\/guide\/lodging-investment-checklist\.html/);
+assert.match(investmentChecklistGuide, /\/guide#profitability-examples-title/);
+assert.match(operatingCostGuide, /\/guide#profitability-examples-title/);
+assert.match(guideHub, /\/guide\/motel-operating-cost/);
+assert.match(guideHub, /\/guide\/lodging-investment-checklist/);
+assert.match(breakEvenGuide, /\/guide\/motel-operating-cost/);
+assert.match(rentGuide, /\/guide\/lodging-investment-checklist/);
 
 const guideHtmlFiles = await Promise.all(guideFiles.map((file) => readFile(join(publicRoot, 'guide', file), 'utf8')));
 const guideH1s = guideHtmlFiles.map((html) => html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)?.[1].replace(/<[^>]+>/g, '').trim());
@@ -203,8 +203,8 @@ for (const [scenarioId, result] of guideScenarios) {
 }
 assert.equal((guideHub.match(/data-card-scenario=/g) || []).length, 5, 'guide.html 사례 카드는 정확히 5개여야 함');
 assert.equal((guideHub.match(/data-comparison-scenario=/g) || []).length, 5, 'guide.html 비교표 행은 정확히 5개여야 함');
-const guideExampleTargets = [...guideHub.matchAll(/href="(\/examples\/[^"#?]+\.html)"/g)].map((match) => match[1]);
-assert.deepEqual([...new Set(guideExampleTargets)].sort(), exampleFiles.map((file) => `/examples/${file}`), 'guide.html은 정확히 기존 사례 5개만 연결해야 함');
+const guideExampleTargets = [...guideHub.matchAll(/href="(\/examples\/[^"#?]+)"/g)].map((match) => match[1]);
+assert.deepEqual([...new Set(guideExampleTargets)].sort(), exampleFiles.map((file) => `/examples/${file.replace(/\.html$/, '')}`), 'guide.html은 정확히 기존 사례 5개만 연결해야 함');
 assert.match(guideHub, /data-example-finder/);
 assert.match(guideHub, /comparison-table-scroll/);
 assert.match(guideHub, /href="https:\/\/staycalculators\.com\/"/, 'guide.html 계산기 CTA 누락');
@@ -227,8 +227,12 @@ for (const html of [lodgingExampleHtml, hybridExampleHtml, lodgingTwentyHtml, lo
 }
 
 const assertRelatedExamples = (html, currentFile, expectedFiles) => {
-  assert.doesNotMatch(html, new RegExp(`href="/examples/${currentFile.replaceAll('.', '\\.')}"`), `${currentFile}: 자기 자신 사례 링크 금지`);
-  for (const file of expectedFiles) assert.match(html, new RegExp(`href="/examples/${file.replaceAll('.', '\\.')}"`), `${currentFile}: 관련 사례 링크 누락 ${file}`);
+  const currentPath = currentFile.replace(/\.html$/, '');
+  assert.doesNotMatch(html, new RegExp(`href="/examples/${currentPath.replaceAll('.', '\\.')}"`), `${currentFile}: 자기 자신 사례 링크 금지`);
+  for (const file of expectedFiles) {
+    const targetPath = file.replace(/\.html$/, '');
+    assert.match(html, new RegExp(`href="/examples/${targetPath.replaceAll('.', '\\.')}"`), `${currentFile}: 관련 사례 링크 누락 ${file}`);
+  }
 };
 assertRelatedExamples(lodgingTwentyHtml, '20-room-lodging-example.html', ['30-room-lodging-example.html', '35-room-lodging-example.html']);
 assertRelatedExamples(lodgingExampleHtml, '30-room-lodging-example.html', ['20-room-lodging-example.html', '35-room-lodging-example.html']);

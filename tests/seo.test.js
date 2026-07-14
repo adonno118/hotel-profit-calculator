@@ -34,7 +34,7 @@ const pages = [...corePages, ...contentPages];
 const expectedUrls = new Map([
   ['index.html', `${siteUrl}/`],
   ...corePages.slice(1).map((page) => [page, `${siteUrl}/${page.replace(/\.html$/, '')}`]),
-  ...contentPages.map((page) => [page, `${siteUrl}/${page}`])
+  ...contentPages.map((page) => [page, `${siteUrl}/${page.replace(/\.html$/, '')}`])
 ]);
 const canonicalUrls = [];
 const titles = new Set();
@@ -66,6 +66,8 @@ for (const page of pages) {
   assert.equal((html.match(/<\/body>/gi) || []).length, 1, `${page}: body 종료 태그 불일치`);
   assert.doesNotMatch(html, placeholderUrlPattern, `${page}: placeholder URL 존재`);
   assert.doesNotMatch(html, /workers\.dev/i, `${page}: workers.dev URL 잔존`);
+  assert.doesNotMatch(html, /(?:https:\/\/staycalculators\.com)?\/(?:guide|examples)\/[^"'#?\s<>]+\.html/i, `${page}: 콘텐츠 .html URL 잔존`);
+  assert.doesNotMatch(html, /(?:https:\/\/staycalculators\.com)?\/guide\.html(?:[#?"'])/i, `${page}: guide.html URL 잔존`);
 
   const canonical = html.match(/<link\s+rel="canonical"\s+href="([^"]+)"/i)?.[1];
   const ogUrl = html.match(/<meta\s+property="og:url"\s+content="([^"]+)"/i)?.[1];
@@ -125,6 +127,7 @@ assert.doesNotMatch(sitemap, placeholderUrlPattern, '사이트맵 placeholder UR
 assert.doesNotMatch(sitemap, /workers\.dev/i, '사이트맵 workers.dev URL 잔존');
 const sitemapLocations = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
 assert.equal(new Set(sitemapLocations).size, sitemapLocations.length, '사이트맵 중복 URL 존재');
+assert.doesNotMatch(sitemap, /\/(?:guide|examples)\/[^<]+\.html<\/loc>/i, '사이트맵에 redirect .html URL 존재');
 
 const robots = await readFile(join(root, 'robots.txt'), 'utf8');
 assert.match(robots, /User-agent:\s*\*/i);
