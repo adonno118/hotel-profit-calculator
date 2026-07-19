@@ -13,6 +13,7 @@ const corePages = [
   { file: 'about.html', path: '/about' },
   { file: 'guide.html', path: '/guide' },
   { file: 'privacy.html', path: '/privacy' },
+  { file: 'terms.html', path: '/terms' },
   { file: 'disclaimer.html', path: '/disclaimer' },
   { file: 'contact.html', path: '/contact' }
 ];
