@@ -7,7 +7,7 @@ import { SITE_CONFIG } from '../public/js/config/site-config.js';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', 'public');
 const siteUrl = 'https://staycalculators.com';
 const placeholderUrlPattern = /(?:ex(?:ample|maple)\.com|your[-_.]?(?:domain|site|url))/i;
-const corePages = ['index.html', 'about.html', 'guide.html', 'privacy.html', 'disclaimer.html', 'contact.html'];
+const corePages = ['index.html', 'about.html', 'guide.html', 'privacy.html', 'terms.html', 'disclaimer.html', 'contact.html'];
 const guidePages = [
   'guide/hotel-profit-calculation.html',
   'guide/hybrid-operation-profit.html',
@@ -157,6 +157,7 @@ assert.ok(schema['@graph'].some((item) => item['@type'] === 'SoftwareApplication
 for (const item of schema['@graph']) assert.equal(item.url, `${siteUrl}/`, `${item['@type']}: structured data URL 불일치`);
 
 const privacy = await readFile(join(root, 'privacy.html'), 'utf8');
+assert.match(privacy, /현재 사이트에는 Google Analytics, Google Tag Manager 또는 Cloudflare Web Analytics와 같은 별도 방문자 분석 스크립트가 설치되어 있지 않습니다/, '미설치 분석 도구 상태 안내 누락');
 assert.match(privacy, /https:\/\/policies\.google\.com\/technologies\/partner-sites/i, 'Google 데이터 처리 안내 링크 누락');
 assert.match(privacy, /https:\/\/adssettings\.google\.com\//i, 'Google 광고 설정 링크 누락');
 assert.doesNotMatch(privacy, /현재 코드에는 Google AdSense 광고 코드가 적용되어 있지 않습니다/, '과거 AdSense 미적용 문구 잔존');
@@ -165,5 +166,18 @@ for (const disclosure of ['쿠키', '웹 비콘', 'IP 주소', '브라우저 정
 }
 assert.match(privacy, /심사·승인 상태와 운영 설정에 따라/, 'AdSense 상태의 조건부 표현 누락');
 assert.match(privacy, /dirdhfm123@gmail\.com/i, '문의 이메일 누락');
+
+for (const page of guidePages) {
+  const html = await readFile(join(root, page), 'utf8');
+  assert.match(html, /작성·검토:<\/strong> 숙박업 운영자/, `${page}: 작성자 표시 누락`);
+  assert.match(html, /<time datetime="2026-07-20">2026년 7월 20일<\/time>/, `${page}: 최종 업데이트 표시 누락`);
+}
+for (const page of examplePages) {
+  const html = await readFile(join(root, page), 'utf8');
+  assert.match(html, /숙박업 매물 검토 과정에서 자주 접하는 조건을 바탕으로 재구성한 가상 시나리오/, `${page}: 가상 사례 출처 누락`);
+  assert.match(html, /실제 특정 매물이나 사업장을 나타내지 않으며/, `${page}: 특정 매물 비해당 고지 누락`);
+  assert.match(html, /작성·검토:<\/strong> 숙박업 운영자/, `${page}: 작성자 표시 누락`);
+  assert.match(html, /<time datetime="2026-07-20">2026년 7월 20일<\/time>/, `${page}: 최종 업데이트 표시 누락`);
+}
 
 console.log('seo tests: passed');
